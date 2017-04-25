@@ -1,16 +1,48 @@
 (ns koraujkor.charts
     (:require [reagent.core :as reagent]))
 
+(def -model
+{
+    :credits {
+        :enabled false
+    }
+})
+
 (defn- chart [style model]
     (reagent/create-class {:reagent-render #(do [:div {:style style}])
-                           :component-did-mount #(.highcharts (js/$ (reagent/dom-node %)) (clj->js model))}))
+                           :component-did-mount #(.highcharts (js/$ (reagent/dom-node %)) (clj->js (merge -model model)))}))
+
+(defn- chart' [style model']
+    (reagent/create-class {:reagent-render #(do [:div {:style style}])
+                           :component-did-mount #(.highcharts (js/$ (reagent/dom-node %)) (clj->js (merge -model (model'))))
+                           :component-did-update #(.highcharts (js/$ (reagent/dom-node %)) (clj->js (assoc-in (merge -model (model')) [:plotOptions :series :animation] false)))}))
+
+(.setOptions js/Highcharts (clj->js
+{
+    :lang {
+        :months [
+            "január", "február", "március"
+            "április", "május", "június"
+            "július", "augusztus", "szeptember"
+            "október", "november", "december"
+        ]
+        :shortMonths [
+            "jan", "feb", "már"
+            "ápr", "máj", "jún"
+            "júl", "aug", "szept"
+            "okt", "nov", "dec"
+        ]
+    }
+}))
 
 (defn- color [n]
     (nth (.. js/Highcharts getOptions -colors) n))
 (defn- rgba [rgb a]
-    (.. js/Highcharts (Color rgb) (setOpacity a) (get "rgba")))
+    (.. js/Highcharts (Color (clj->js rgb)) (setOpacity a) (get "rgba")))
 (defn- brighten [rgb x]
-    (.. js/Highcharts (Color rgb) (brighten x) (get "rgb")))
+    (.. js/Highcharts (Color (clj->js rgb)) (brighten x) (get "rgb")))
+(defn- brighten' [c x]
+    (.. js/Highcharts (Color (clj->js c)) (brighten x) get))
 
 (def gradient2
     (into [] (map #(do {:radialGradient {:cx 0.5 :cy 0.3 :r 0.7} :stops [[0, %] [1, (brighten % -0.3)]]}) ; darken
@@ -41,10 +73,10 @@
 
 
 (defn- psv-data [psv]
-    (into [] (map (fn [a & z] {:name a :y (reduce + (map second z)) :drilldown a}) psv)))
+    (into [] (map (fn [[a & z]] {:name a :y (reduce + (map second z)) :drilldown a}) psv)))
 
 (defn- psv-series [psv]
-    (into [] (map (fn [a & z] {:name a :id a :data z}) psv)))
+    (into [] (map (fn [[a & z]] {:name a :id a :data z}) psv)))
 
 (def psv0 [#_["Ország" ["Város" "Jegyzékek száma"]]
     ["Ausztria" ["Bécs" 8]
@@ -2568,8 +2600,8 @@
     (into [] (map #(do {:name %1 :y (:y %2) :color (:color %2)}) categories data)))
 
 (defn- donut2 [data]
-    (into [] (mapcat #(let [c (:color %) d (:drilldown %) l (-> d :data :length)]
-        (for [j (range l)] {:name (nth (:categories d) j) :y (nth (:data d) j) :color (brighten c (- 0.2 (/ (/ j l) 5)))})) data)))
+    (into [] (mapcat #(let [c (:color %) d (:drilldown %) l (-> d :data count)]
+        (for [j (range l)] {:name (nth (:categories d) j) :y (nth (:data d) j) :color (brighten' c (- 0.2 (/ (/ j l) 5)))})) data)))
 
 (defn -pie-donut []
     (chart {:min-width "300px" :height "770px" :max-width "900px" :margin "0 auto"}
@@ -2800,9 +2832,6 @@
                     :legend {
                         :enabled false
                     }
-                    :credits {
-                        :enabled false
-                    }
                     :plotOptions {
                         :series {
                             :allowPointSelect true
@@ -2832,10 +2861,10 @@
                 #(do [:div
                     [:div {:id container :style {:min-width "300px" :height "690px" :max-width "900px" :margin "0 auto"}}]
                     [:table
-                        [:tr [:td "alpha"] [:td [:input#R0 {:type "range" :min -45 :max 45 :value 20}] [:span#R0-value.value]]]
-                        [:tr [:td "beta"]  [:td [:input#R1 {:type "range" :min -45 :max 45 :value 10}] [:span#R1-value.value]]]]])
+                        [:tr [:td "alpha"] [:td [:input#R0 {:type "range" :min -45 :max 45 :defaultValue 20}] [:span#R0-value.value]]]
+                        [:tr [:td "beta"]  [:td [:input#R1 {:type "range" :min -45 :max 45 :defaultValue 10}] [:span#R1-value.value]]]]])
             :component-did-mount
-                #(let [chart (new js/Highcharts.Chart (clj->js model))
+                #(let [chart (new js/Highcharts.Chart (clj->js (merge -model model)))
                        options3d (.. chart -options -chart -options3d)
                        showValues (fn []
                             (.html (js/$ "#R0-value") (.-alpha options3d))
@@ -3091,9 +3120,6 @@
         :floating true
         :backgroundColor "white"
         :borderWidth 1
-    }
-    :credits {
-        :enabled false
     }
     :xAxis {
         :categories ["Ausztria", "Csehország", "Hollandia", "Horvátország", "Lengyelország", "Magyarország", "Németország", "Olaszország", "Románia", "Svájc", "Szlovákia", "Törökország", "Ukrajna"]
@@ -3389,9 +3415,6 @@
         :floating true
         :backgroundColor "white"
         :borderWidth 1
-    }
-    :credits {
-        :enabled false
     }
     :plotOptions {
         :scatter {
@@ -4109,15 +4132,45 @@
               "http://code.highcharts.com/highcharts-more.js"
               "http://code.highcharts.com/modules/exporting.js"])
 
-;       Highcharts.setOptions({
-;           :lang {
-;               :thousandsSep ""
-;           }
-;       })
+(defonce tulajdonosok-élete (reagent/atom
+[
+    ["Zay Ferenc"             1505 1570]
+    ["Thurzó (II.) Szaniszló" 1531 1586]
+    ["Illésházy István"       1540 1609]
+    ["Báthory András"         1566 1599]
+    ["Forgách Ferenc"         1566 1615]
+    ["Thurzó (V.) György"     1567 1616]
+    ["Esterházy Miklós"       1582 1645]
+    ["Rákóczi György, I."     1593 1648]
+    ["Rákóczi Pál"            1596 1636]
+    ["Batthyány I. Ádám"      1609 1659]
+    ["Bethlen János"          1613 1678]
+    ["Thököly Zsigmond"       1618 1678]
+    ["Zrínyi Miklós"          1620 1664]
+    ["Zrínyi Péter"           1621 1671]
+    ["Rákóczi Zsigmond, IV."  1622 1652]
+    ["Nádasdy Ferenc"         1625 1671]
+    ["Batthyány I. Pál"       1629 1674]
+    ["Apafi Mihály, I."       1629 1690]
+    ["Batthyány II. Kristóf"  1632 1685]
+    ["Teleki I. Mihály"       1634 1690]
+    ["Csáky István"           1635 1699]
+    ["Eszterházy Pál"         1635 1713]
+    ["Bethlen Miklós"         1642 1716]
+    ["Bethlen Elek"           1645 1696]
+    ["Rákóczi Erzsébet"       1655 1707]
+    ["Thököly Imre"           1657 1705]
+    ["Batthyány II. Ádám"     1662 1703]
+    ["Teleki János"           1663 1679]
+    ["Apafi Mihály, II."      1676 1713]
+    ["Rákóczi Ferenc, II."    1676 1735]
+    ["Teleki Pál"             1677 1731]
+    ["Bethlen Kata"           1700 1759]
+]))
 
-(defn -range []
-    (chart {:min-width "300px" :height "760px" :max-width "900px" :margin "0 auto"}
-{
+(defn -range [] (let [_ @tulajdonosok-élete]
+    [chart' {:min-width "300px" :height "760px" :max-width "900px" :margin "0 auto"}
+(fn [] {
     :chart {
         :type "columnrange"
         :inverted true
@@ -4132,40 +4185,7 @@
         :enabled false
     }
     :xAxis {
-        :categories [
-            "Zay Ferenc"
-            "Thurzó (II.) Szaniszló"
-            "Illésházy István"
-            "Báthory András"
-            "Forgách Ferenc"
-            "Thurzó (V.) György"
-            "Esterházy Miklós"
-            "Rákóczi György, I."
-            "Rákóczi Pál"
-            "Batthyány I. Ádám"
-            "Bethlen János"
-            "Thököly Zsigmond"
-            "Zrínyi Miklós"
-            "Zrínyi Péter"
-            "Rákóczi Zsigmond, IV."
-            "Nádasdy Ferenc"
-            "Batthyány I. Pál"
-            "Apafi Mihály, I."
-            "Batthyány II. Kristóf"
-            "Teleki I. Mihály"
-            "Csáky István"
-            "Eszterházy Pál"
-            "Bethlen Miklós"
-            "Bethlen Elek"
-            "Rákóczi Erzsébet"
-            "Thököly Imre"
-            "Batthyány II. Ádám"
-            "Teleki János"
-            "Apafi Mihály, II."
-            "Rákóczi Ferenc, II."
-            "Teleki Pál"
-            "Bethlen Kata"
-        ]
+        :categories (mapv first @tulajdonosok-élete)
     }
     :yAxis {
         :title {
@@ -4176,48 +4196,19 @@
         :columnrange {
             :dataLabels {
                 :enabled true
+                :formatter #(js* "this.y") ; clean, unformatted number for year
+            }
+            :tooltip {
+                :pointFormat "{series.name}: <b>{point.low:.0f}</b> - <b>{point.high:.0f}</b>"
             }
         }
     }
     :colors gradient2
     :series [{
         :name "élt"
-        :data [
-            [1505, 1570]
-            [1531, 1586]
-            [1540, 1609]
-            [1566, 1599]
-            [1566, 1615]
-            [1567, 1616]
-            [1582, 1645]
-            [1593, 1648]
-            [1596, 1636]
-            [1609, 1659]
-            [1613, 1678]
-            [1618, 1678]
-            [1620, 1664]
-            [1621, 1671]
-            [1622, 1652]
-            [1625, 1671]
-            [1629, 1674]
-            [1629, 1690]
-            [1632, 1685]
-            [1634, 1690]
-            [1635, 1699]
-            [1635, 1713]
-            [1642, 1716]
-            [1645, 1696]
-            [1655, 1707]
-            [1657, 1705]
-            [1662, 1703]
-            [1663, 1679]
-            [1676, 1713]
-            [1676, 1735]
-            [1677, 1731]
-            [1700, 1759]
-        ]
+        :data (mapv rest @tulajdonosok-élete)
     }]
-}))
+})]))
 
 
 #_(ns koraujkor.charts.range-pie)
@@ -4228,12 +4219,6 @@
               "http://code.highcharts.com/highcharts.js"
               "http://code.highcharts.com/highcharts-more.js"
               "http://code.highcharts.com/modules/exporting.js"])
-
-;       Highcharts.setOptions({
-;           :lang {
-;               :thousandsSep ""
-;           }
-;       })
 
 (defn -range-pie []
     (chart {:min-width "300px" :height "750px" :max-width "900px" :margin "0 auto"}
@@ -4263,6 +4248,7 @@
         :columnrange {
             :dataLabels {
                 :enabled true
+                :formatter #(js* "this.y") ; clean, unformatted number for year
             }
         }
     }
@@ -4304,7 +4290,7 @@
             { :name "Bethlen Kata" :low 1700 :high 1759 :color (gradient2 5) }
         ]
         :tooltip {
-            :pointFormat "{series.name}: <b>{point.low}</b> - <b>{point.high}</b>"
+            :pointFormat "{series.name}: <b>{point.low:.0f}</b> - <b>{point.high:.0f}</b>"
         }
     }, {
         :type "pie"
@@ -5400,12 +5386,6 @@
 #_(def require ["http://code.jquery.com/jquery-1.11.1.min.js"
               "http://code.highcharts.com/highcharts.js"
               "http://code.highcharts.com/modules/exporting.js"])
-
-;       Highcharts.setOptions({
-;           :lang {
-;            ;; :thousandsSep ""
-;           }
-;       })
 
 (defn -mokka-r-bibl []
     (chart {:min-width "300px" :height "1800px" :max-width "900px" :margin "0 auto"}
@@ -7507,24 +7487,6 @@
               "http://code.highcharts.com/highcharts.js"
               "http://code.highcharts.com/modules/exporting.js"])
 
-;       Highcharts.setOptions({
-;           :lang {
-;               :thousandsSep ""
-;               :months [
-;                   "január", "február", "március"
-;                   "április", "május", "június"
-;                   "július", "augusztus", "szeptember"
-;                   "október", "november", "december"
-;               ]
-;               :shortMonths [
-;                   "jan", "feb", "már"
-;                   "ápr", "máj", "jún"
-;                   "júl", "aug", "szept"
-;                   "okt", "nov", "dec"
-;               ]
-;           }
-;       })
-
 (defn -humanus-creat8-modif5 []
     (chart {:min-width "300px" :height "750px" :max-width "900px" :margin "0 auto"}
 {
@@ -7977,24 +7939,6 @@
 #_(def require ["http://code.jquery.com/jquery-1.11.1.min.js"
               "http://code.highcharts.com/highcharts.js"
               "http://code.highcharts.com/modules/exporting.js"])
-
-;       Highcharts.setOptions({
-;           :lang {
-;               :thousandsSep ""
-;               :months [
-;                   "január", "február", "március"
-;                   "április", "május", "június"
-;                   "július", "augusztus", "szeptember"
-;                   "október", "november", "december"
-;               ]
-;               :shortMonths [
-;                   "jan", "feb", "már"
-;                   "ápr", "máj", "jún"
-;                   "júl", "aug", "szept"
-;                   "okt", "nov", "dec"
-;               ]
-;           }
-;       })
 
 (defn -humanus-creat-modif []
     (chart {:min-width "300px" :height "750px" :max-width "900px" :margin "0 auto"}
