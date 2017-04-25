@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Range chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 760px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    Highcharts.setOptions({
+        lang: {
+            thousandsSep: ''
+        }
+    });
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'columnrange',
+            inverted: true
+        },
+        title: {
+            text: 'Tulajdonosok élete'
+        },
+        subtitle: {
+            text: 'Főnemesek'
+        },
+        legend: {
+            enabled: false
+        },
+        xAxis: {
+            categories: [
+                'Zay Ferenc',
+                'Thurzó (II.) Szaniszló',
+                'Illésházy István',
+                'Báthory András',
+                'Forgách Ferenc',
+                'Thurzó (V.) György',
+                'Esterházy Miklós',
+                'Rákóczi György, I.',
+                'Rákóczi Pál',
+                'Batthyány I. Ádám',
+                'Bethlen János',
+                'Thököly Zsigmond',
+                'Zrínyi Miklós',
+                'Zrínyi Péter',
+                'Rákóczi Zsigmond, IV.',
+                'Nádasdy Ferenc',
+                'Batthyány I. Pál',
+                'Apafi Mihály, I.',
+                'Batthyány II. Kristóf',
+                'Teleki I. Mihály',
+                'Csáky István',
+                'Eszterházy Pál',
+                'Bethlen Miklós',
+                'Bethlen Elek',
+                'Rákóczi Erzsébet',
+                'Thököly Imre',
+                'Batthyány II. Ádám',
+                'Teleki János',
+                'Apafi Mihály, II.',
+                'Rákóczi Ferenc, II.',
+                'Teleki Pál',
+                'Bethlen Kata'
+            ]
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        plotOptions: {
+            columnrange: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        series: [{
+            name: 'élt',
+            data: [
+                [1505, 1570],
+                [1531, 1586],
+                [1540, 1609],
+                [1566, 1599],
+                [1566, 1615],
+                [1567, 1616],
+                [1582, 1645],
+                [1593, 1648],
+                [1596, 1636],
+                [1609, 1659],
+                [1613, 1678],
+                [1618, 1678],
+                [1620, 1664],
+                [1621, 1671],
+                [1622, 1652],
+                [1625, 1671],
+                [1629, 1674],
+                [1629, 1690],
+                [1632, 1685],
+                [1634, 1690],
+                [1635, 1699],
+                [1635, 1713],
+                [1642, 1716],
+                [1645, 1696],
+                [1655, 1707],
+                [1657, 1705],
+                [1662, 1703],
+                [1663, 1679],
+                [1676, 1713],
+                [1676, 1735],
+                [1677, 1731],
+                [1700, 1759]
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>

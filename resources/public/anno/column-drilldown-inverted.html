@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Column drilldown chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    Highcharts.data( {
+        csv: document.getElementById('psv').innerHTML,
+        itemDelimiter: '|',
+        parsed: function (columns) {
+
+            var countries = {}, towns = {};
+
+            $.each(columns[0], function (i, name) {
+                if (i > 0) {
+                    var country = columns[0][i], town = columns[1][i], nof = columns[2][i];
+
+                    if (!countries[country]) {
+                        countries[country] = nof;
+                    } else {
+                        countries[country] += nof;
+                    }
+
+                    if (!towns[country]) {
+                        towns[country] = [];
+                    }
+                    towns[country].push([town, nof]);
+                }
+            });
+
+            var countriesData = [], drilldownSeries = [];
+
+            $.each(countries, function (name, y) {
+                countriesData.push({
+                    name: name,
+                    y: y,
+                    drilldown: towns[name] ? name : null
+                });
+            });
+            $.each(towns, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            $('#container').highcharts( {
+                chart: {
+                    type: 'column',
+                    inverted: true
+                },
+                title: {
+                    text: 'A jegyzékek száma (min. 3) keletkezési hely szerint'
+                },
+                subtitle: {
+                    text: 'Kattints az országra: jegyzékek száma városok szerint'
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: 0,
+                        style: {
+                            fontSize: '14px'
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Jegyzékek száma'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y} db</b>'
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true,
+                        cursor: 'pointer'
+                    }
+                },
+                series: [{
+                    name: 'jegyzékek száma',
+                    colorByPoint: true,
+                    data: countriesData,
+                    dataLabels: {
+                        enabled: true,
+                        y: -10,
+                        style: {
+                            fontSize: '14px'
+                        }
+                    }
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+        }
+    });
+});
+</script>
+<pre id="psv" style="display: none;">Ország|Város|Jegyzékek száma
+Szlovákia|Besztercebánya|104
+Szlovákia|Selmecbánya|85
+Szlovákia|Kassa|83
+Szlovákia|Lőcse|66
+Szlovákia|Körmöcbánya|37
+Szlovákia|Pozsony|28
+Szlovákia|Eperjes|23
+Szlovákia|Nagyszombat|20
+Szlovákia|Garamszentbenedek|17
+Szlovákia|Bártfa|8
+Szlovákia|Szakolca|5
+Szlovákia|Késmárk|5
+Szlovákia|Zólyom|4
+Szlovákia|Trencsén|4
+Szlovákia|Nyitra|4
+Szlovákia|Lelesz|4
+Szlovákia|Karvaly|4
+Szlovákia|Sasvár|3
+Szlovákia|Nagysáros|3
+Szlovákia|Komárom|3
+Szlovákia|Garamszentkereszt|3
+Szlovákia|Garammindszent|3
+Szlovákia|Garamkürtös|3
+Szlovákia|Barskapronca|3
+Románia|Nagyszeben|128
+Románia|Beszterce|93
+Románia|Kolozsvár|53
+Románia|Segesvár|50
+Románia|Brassó|34
+Románia|Gyulafehérvár|17
+Románia|Gernyeszeg|17
+Románia|Nagyenyed|12
+Románia|Nagybánya|12
+Románia|Marosvásárhely|12
+Románia|Székelyudvarhely|10
+Románia|Fogaras|8
+Románia|Szeben|6
+Románia|Torda|4
+Románia|Radnót|4
+Románia|Gyergyóalfalu|4
+Románia|Erdély|4
+Magyarország|Sopron|147
+Magyarország|Kőszeg|27
+Magyarország|Debrecen|27
+Magyarország|Sárospatak|21
+Magyarország|Buda|16
+Magyarország|Szatmár|6
+Magyarország|Kóka|6
+Magyarország|Jobbágyi|6
+Magyarország|Ecseg|6
+Magyarország|Tóalmás|5
+Magyarország|Pest|5
+Magyarország|Romhány|4
+Magyarország|Esztergom|4
+Magyarország|Buják|4
+Magyarország|Veresegyháza|3
+Magyarország|Vác|3
+Magyarország|Úri|3
+Magyarország|Szecső|3
+Magyarország|Sümeg|3
+Magyarország|Pécel|3
+Magyarország|Pannonhalma|3
+Magyarország|Kálló|3
+Magyarország|Gyöngyös|3
+Magyarország|Bag|3
+Ausztria|Ruszt|35
+Ausztria|Németújvár|11
+Ausztria|Bécs|8
+Ausztria|Kismarton|5
+Ausztria|Nezsidér|4
+Ausztria|Kishöflány|4
+Ausztria|Pottendorf|3
+Ausztria|Lajtapordány|3
+Ukrajna|Ungvár|7
+Olaszország|Padova|6
+Németország|Ulm|4
+Hollandia|Franeker|4
+Lengyelország|Boroszló|3</pre>
+</body>
+</html>

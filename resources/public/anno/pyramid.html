@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Pyramid chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/funnel.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 700px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'pyramid'
+        },
+        title: {
+            text: 'A jegyzékek száma egyre speciálisabb feltételek szerint'
+        },
+        subtitle : {
+            text: 'Magyarország / Sopron / XVII. század'
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y} db',
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                    softConnector: true
+                }
+            }
+        },
+        series: [{
+            data: [
+                ['Összes', 1687],
+                ['Magyarország', 427],
+                ['Sopron', 147],
+                ['XVII. század', 130]
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>

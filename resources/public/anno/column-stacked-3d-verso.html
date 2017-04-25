@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Column chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 740px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                depth: 90
+            },
+            marginTop: 90
+        },
+        title: {
+            text: 'A jegyzékek száma keletkezési ország szerint'
+        },
+        subtitle: {
+            text: 'Évszázadonként rétegezve (forgatható grafikon)'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#ffffff',
+            borderWidth: 1
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: ['Ausztria', 'Csehország', 'Hollandia', 'Horvátország', 'Lengyelország', 'Magyarország', 'Németország', 'Olaszország', 'Románia', 'Svájc', 'Szlovákia', 'Törökország', 'Ukrajna'],
+            labels: {
+                rotation: -30,
+                style: {
+                    fontSize: '13px'
+                }
+            }
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Jegyzékek száma'
+            }
+        },
+        tooltip: {
+            headerFormat: '<b>{point.key}</b><br/>',
+            pointFormat: '{series.name}: {point.y} / {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                depth: 60
+            }
+        },
+        series: [{
+            name: 'XVIII. század',
+            data: [15, null, 2, null, 3, 200, 2, null, 179, null, 57, 2, 8]
+        }, {
+            name: 'XVII. század',
+            data: [96, 1, 4, 4, null, 214, 6, 5, 308, 2, 447, null, null]
+        }, {
+            name: 'XVI. század',
+            data: [9, null, null, null, null, 13, 2, 2, 31, null, 75, null, null]
+        }]
+    });
+
+    // Add mouse events for rotation
+    $(chart.container).bind('mousedown.hc touchstart.hc', function (e) {
+        e = chart.pointer.normalize(e);
+
+        var posX = e.pageX,
+            posY = e.pageY,
+            alpha = chart.options.chart.options3d.alpha,
+            beta = chart.options.chart.options3d.beta,
+            newAlpha,
+            newBeta,
+            sensitivity = 5; // lower is more sensitive
+
+        $(document).bind({
+            'mousemove.hc touchdrag.hc': function (e) {
+                // Run beta
+                newBeta = beta + (posX - e.pageX) / sensitivity;
+                newBeta = Math.min(100, Math.max(-100, newBeta));
+                chart.options.chart.options3d.beta = newBeta;
+
+                // Run alpha
+                newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                newAlpha = Math.min(100, Math.max(-100, newAlpha));
+                chart.options.chart.options3d.alpha = newAlpha;
+
+                chart.redraw(false);
+            },
+            'mouseup touchend': function () {
+                $(document).unbind('.hc');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

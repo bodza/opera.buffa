@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Area chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    Highcharts.setOptions({
+        lang: {
+            thousandsSep: '',
+            months: [
+                'január', 'február', 'március',
+                'április', 'május', 'június',
+                'július', 'augusztus', 'szeptember',
+                'október', 'november', 'december'
+            ],
+            shortMonths: [
+                'jan', 'feb', 'már',
+                'ápr', 'máj', 'jún',
+                'júl', 'aug', 'szept',
+                'okt', 'nov', 'dec'
+            ]
+        }
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'areaspline',
+            zoomType: 'xy',
+            panning: true,
+            panKey: 'shift'
+        },
+        title: {
+            text: 'HUMANUS rekordok létrehozása és utolsó módosítása (2000-től)'
+        },
+        subtitle: {
+            text: 'A rekordok bejegyzései (<b>008</b>[0-3] és <b>005</b>[2-5]) alapján együttesen'
+        },
+        xAxis: {
+            type: 'datetime',
+            minRange: 7 * 24 * 3600 * 1000, // seven days
+            dateTimeLabelFormats: {
+                day: '%b. %e.'
+            }
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Létrehozások és módosítások havonta'
+            },
+            labels: {
+                formatter: function () {
+                    return this.value;
+                }
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' tétel',
+            dateTimeLabelFormats: {
+                month:"%Y. %B"
+            }
+        },
+        plotOptions: {
+            areaspline: {
+                stacking: 'normal',
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'létrehozások',
+            data: [
+                [ Date.UTC(2000, 0), 388 ],
+                [ Date.UTC(2000, 1), 228 ],
+                [ Date.UTC(2000, 2), 181 ],
+                [ Date.UTC(2000, 3), 188 ],
+                [ Date.UTC(2000, 4), 162 ],
+                [ Date.UTC(2000, 5), 96 ],
+                [ Date.UTC(2000, 6), 109 ],
+                [ Date.UTC(2000, 7), 189 ],
+                [ Date.UTC(2000, 8), 146 ],
+                [ Date.UTC(2000, 9), 224 ],
+                [ Date.UTC(2000, 10), 100 ],
+                [ Date.UTC(2000, 11), 11 ],
+
+                [ Date.UTC(2001, 0), 87 ],
+                [ Date.UTC(2001, 1), 256 ],
+                [ Date.UTC(2001, 2), 264 ],
+                [ Date.UTC(2001, 3), 215 ],
+                [ Date.UTC(2001, 4), 131 ],
+                [ Date.UTC(2001, 5), 135 ],
+                [ Date.UTC(2001, 6), 168 ],
+                [ Date.UTC(2001, 7), 375 ],
+                [ Date.UTC(2001, 8), 166 ],
+                [ Date.UTC(2001, 9), 280 ],
+                [ Date.UTC(2001, 10), 177 ],
+                [ Date.UTC(2001, 11), 132 ],
+
+                [ Date.UTC(2002, 0), 440 ],
+                [ Date.UTC(2002, 1), 353 ],
+                [ Date.UTC(2002, 2), 372 ],
+                [ Date.UTC(2002, 3), 434 ],
+                [ Date.UTC(2002, 4), 713 ],
+                [ Date.UTC(2002, 5), 728 ],
+                [ Date.UTC(2002, 6), 529 ],
+                [ Date.UTC(2002, 7), 346 ],
+                [ Date.UTC(2002, 8), 486 ],
+                [ Date.UTC(2002, 9), 604 ],
+                [ Date.UTC(2002, 10), 528 ],
+                [ Date.UTC(2002, 11), 219 ],
+
+                [ Date.UTC(2003, 0), 752 ],
+                [ Date.UTC(2003, 1), 467 ],
+                [ Date.UTC(2003, 2), 408 ],
+                [ Date.UTC(2003, 3), 741 ],
+                [ Date.UTC(2003, 4), 504 ],
+                [ Date.UTC(2003, 5), 461 ],
+                [ Date.UTC(2003, 6), 463 ],
+                [ Date.UTC(2003, 7), 374 ],
+                [ Date.UTC(2003, 8), 492 ],
+                [ Date.UTC(2003, 9), 1177 ],
+                [ Date.UTC(2003, 10), 1431 ],
+                [ Date.UTC(2003, 11), 960 ],
+
+                [ Date.UTC(2004, 0), 1581 ],
+                [ Date.UTC(2004, 1), 1121 ],
+                [ Date.UTC(2004, 2), 507 ],
+                [ Date.UTC(2004, 3), 527 ],
+                [ Date.UTC(2004, 4), 713 ],
+                [ Date.UTC(2004, 5), 1172 ],
+                [ Date.UTC(2004, 6), 1190 ],
+                [ Date.UTC(2004, 7), 414 ],
+                [ Date.UTC(2004, 8), 1303 ],
+                [ Date.UTC(2004, 9), 1968 ],
+                [ Date.UTC(2004, 10), 4140 ],
+                [ Date.UTC(2004, 11), 267 ],
+
+                [ Date.UTC(2005, 0), 336 ],
+                [ Date.UTC(2005, 1), 359 ],
+                [ Date.UTC(2005, 2), 453 ],
+                [ Date.UTC(2005, 3), 826 ],
+                [ Date.UTC(2005, 4), 503 ],
+                [ Date.UTC(2005, 5), 403 ],
+                [ Date.UTC(2005, 6), 420 ],
+                [ Date.UTC(2005, 7), 366 ],
+                [ Date.UTC(2005, 8), 509 ],
+                [ Date.UTC(2005, 9), 738 ],
+                [ Date.UTC(2005, 10), 538 ],
+                [ Date.UTC(2005, 11), 230 ],
+
+                [ Date.UTC(2006, 0), 456 ],
+                [ Date.UTC(2006, 1), 421 ],
+                [ Date.UTC(2006, 2), 683 ],
+                [ Date.UTC(2006, 3), 645 ],
+                [ Date.UTC(2006, 4), 813 ],
+                [ Date.UTC(2006, 5), 615 ],
+                [ Date.UTC(2006, 6), 433 ],
+                [ Date.UTC(2006, 7), 564 ],
+                [ Date.UTC(2006, 8), 555 ],
+                [ Date.UTC(2006, 9), 497 ],
+                [ Date.UTC(2006, 10), 320 ],
+                [ Date.UTC(2006, 11), 281 ],
+
+                [ Date.UTC(2007, 0), 305 ],
+                [ Date.UTC(2007, 1), 307 ],
+                [ Date.UTC(2007, 2), 342 ],
+                [ Date.UTC(2007, 3), 1366 ],
+                [ Date.UTC(2007, 4), 1195 ],
+                [ Date.UTC(2007, 5), 1153 ],
+                [ Date.UTC(2007, 6), 471 ],
+                [ Date.UTC(2007, 7), 513 ],
+                [ Date.UTC(2007, 8), 1091 ],
+                [ Date.UTC(2007, 9), 1235 ],
+                [ Date.UTC(2007, 10), 3362 ],
+                [ Date.UTC(2007, 11), 1889 ],
+
+                [ Date.UTC(2008, 0), 2523 ],
+                [ Date.UTC(2008, 1), 2446 ],
+                [ Date.UTC(2008, 2), 2002 ],
+                [ Date.UTC(2008, 3), 3094 ],
+                [ Date.UTC(2008, 4), 116278 ],
+                [ Date.UTC(2008, 5), 3599 ],
+                [ Date.UTC(2008, 6), 2318 ],
+                [ Date.UTC(2008, 7), 4175 ],
+                [ Date.UTC(2008, 8), 2743 ],
+                [ Date.UTC(2008, 9), 2090 ],
+                [ Date.UTC(2008, 10), 1903 ],
+                [ Date.UTC(2008, 11), 1354 ],
+
+                [ Date.UTC(2009, 0), 2195 ],
+                [ Date.UTC(2009, 1), 3874 ],
+                [ Date.UTC(2009, 2), 3645 ],
+                [ Date.UTC(2009, 3), 2723 ],
+                [ Date.UTC(2009, 4), 3145 ],
+                [ Date.UTC(2009, 5), 2980 ],
+                [ Date.UTC(2009, 6), 3145 ],
+                [ Date.UTC(2009, 7), 1458 ],
+                [ Date.UTC(2009, 8), 4044 ],
+                [ Date.UTC(2009, 9), 3223 ],
+                [ Date.UTC(2009, 10), 4023 ],
+                [ Date.UTC(2009, 11), 2512 ],
+
+                [ Date.UTC(2010, 0), 5582 ],
+                [ Date.UTC(2010, 1), 3390 ],
+                [ Date.UTC(2010, 2), 3711 ],
+                [ Date.UTC(2010, 3), 16974 ],
+                [ Date.UTC(2010, 4), 9301 ],
+                [ Date.UTC(2010, 5), 2929 ],
+                [ Date.UTC(2010, 6), 3564 ],
+                [ Date.UTC(2010, 7), 1107 ],
+                [ Date.UTC(2010, 8), 3076 ],
+                [ Date.UTC(2010, 9), 3473 ],
+                [ Date.UTC(2010, 10), 2499 ],
+                [ Date.UTC(2010, 11), 2178 ],
+
+                [ Date.UTC(2011, 0), 4296 ],
+                [ Date.UTC(2011, 1), 2866 ],
+                [ Date.UTC(2011, 2), 2960 ],
+                [ Date.UTC(2011, 3), 2712 ],
+                [ Date.UTC(2011, 4), 4264 ],
+                [ Date.UTC(2011, 5), 2457 ],
+                [ Date.UTC(2011, 6), 4675 ],
+                [ Date.UTC(2011, 7), 1520 ],
+                [ Date.UTC(2011, 8), 3534 ],
+                [ Date.UTC(2011, 9), 3254 ],
+                [ Date.UTC(2011, 10), 3883 ],
+                [ Date.UTC(2011, 11), 2768 ],
+
+                [ Date.UTC(2012, 0), 4102 ],
+                [ Date.UTC(2012, 1), 3777 ],
+                [ Date.UTC(2012, 2), 2614 ],
+                [ Date.UTC(2012, 3), 2348 ],
+                [ Date.UTC(2012, 4), 2562 ],
+                [ Date.UTC(2012, 5), 2252 ],
+                [ Date.UTC(2012, 6), 1842 ],
+                [ Date.UTC(2012, 7), 1382 ],
+                [ Date.UTC(2012, 8), 1674 ],
+                [ Date.UTC(2012, 9), 2644 ],
+                [ Date.UTC(2012, 10), 2620 ],
+                [ Date.UTC(2012, 11), 1146 ],
+
+                [ Date.UTC(2013, 0), 4171 ],
+                [ Date.UTC(2013, 1), 2119 ],
+                [ Date.UTC(2013, 2), 2135 ],
+                [ Date.UTC(2013, 3), 1865 ],
+                [ Date.UTC(2013, 4), 1537 ],
+                [ Date.UTC(2013, 5), 1554 ],
+                [ Date.UTC(2013, 6), 1651 ],
+                [ Date.UTC(2013, 7), 504 ],
+                [ Date.UTC(2013, 8), 2238 ],
+                [ Date.UTC(2013, 9), 1271 ],
+                [ Date.UTC(2013, 10), 1833 ],
+                [ Date.UTC(2013, 11), 766 ],
+
+                [ Date.UTC(2014, 0), 1300 ],
+                [ Date.UTC(2014, 1), 1590 ],
+                [ Date.UTC(2014, 2), 1131 ],
+                [ Date.UTC(2014, 3), 821 ],
+                [ Date.UTC(2014, 4), 843 ],
+                [ Date.UTC(2014, 5), 1800 ],
+                [ Date.UTC(2014, 6), 1018 ],
+                [ Date.UTC(2014, 7), 82 ]
+            ]
+        }, {
+            name: 'módosítások',
+            data: [
+                [ Date.UTC(2000, 0), 0 ],
+                [ Date.UTC(2000, 1), 0 ],
+                [ Date.UTC(2000, 2), 0 ],
+                [ Date.UTC(2000, 3), 0 ],
+                [ Date.UTC(2000, 4), 0 ],
+                [ Date.UTC(2000, 5), 1 ],
+                [ Date.UTC(2000, 6), 0 ],
+                [ Date.UTC(2000, 7), 51734 ],
+                [ Date.UTC(2000, 8), 0 ],
+                [ Date.UTC(2000, 9), 0 ],
+                [ Date.UTC(2000, 10), 13523 ],
+                [ Date.UTC(2000, 11), 2 ],
+
+                [ Date.UTC(2001, 0), 6 ],
+                [ Date.UTC(2001, 1), 178 ],
+                [ Date.UTC(2001, 2), 185 ],
+                [ Date.UTC(2001, 3), 157 ],
+                [ Date.UTC(2001, 4), 111 ],
+                [ Date.UTC(2001, 5), 38 ],
+                [ Date.UTC(2001, 6), 54 ],
+                [ Date.UTC(2001, 7), 183 ],
+                [ Date.UTC(2001, 8), 323 ],
+                [ Date.UTC(2001, 9), 372 ],
+                [ Date.UTC(2001, 10), 88 ],
+                [ Date.UTC(2001, 11), 42 ],
+
+                [ Date.UTC(2002, 0), 338 ],
+                [ Date.UTC(2002, 1), 298 ],
+                [ Date.UTC(2002, 2), 201 ],
+                [ Date.UTC(2002, 3), 361 ],
+                [ Date.UTC(2002, 4), 705 ],
+                [ Date.UTC(2002, 5), 448 ],
+                [ Date.UTC(2002, 6), 301 ],
+                [ Date.UTC(2002, 7), 250 ],
+                [ Date.UTC(2002, 8), 367 ],
+                [ Date.UTC(2002, 9), 380 ],
+                [ Date.UTC(2002, 10), 525 ],
+                [ Date.UTC(2002, 11), 295 ],
+
+                [ Date.UTC(2003, 0), 727 ],
+                [ Date.UTC(2003, 1), 356 ],
+                [ Date.UTC(2003, 2), 468 ],
+                [ Date.UTC(2003, 3), 663 ],
+                [ Date.UTC(2003, 4), 403 ],
+                [ Date.UTC(2003, 5), 318 ],
+                [ Date.UTC(2003, 6), 335 ],
+                [ Date.UTC(2003, 7), 387 ],
+                [ Date.UTC(2003, 8), 471 ],
+                [ Date.UTC(2003, 9), 1130 ],
+                [ Date.UTC(2003, 10), 1142 ],
+                [ Date.UTC(2003, 11), 657 ],
+
+                [ Date.UTC(2004, 0), 1631 ],
+                [ Date.UTC(2004, 1), 1263 ],
+                [ Date.UTC(2004, 2), 570 ],
+                [ Date.UTC(2004, 3), 501 ],
+                [ Date.UTC(2004, 4), 631 ],
+                [ Date.UTC(2004, 5), 847 ],
+                [ Date.UTC(2004, 6), 2535 ],
+                [ Date.UTC(2004, 7), 297 ],
+                [ Date.UTC(2004, 8), 770 ],
+                [ Date.UTC(2004, 9), 1431 ],
+                [ Date.UTC(2004, 10), 2935 ],
+                [ Date.UTC(2004, 11), 273 ],
+
+                [ Date.UTC(2005, 0), 177 ],
+                [ Date.UTC(2005, 1), 307 ],
+                [ Date.UTC(2005, 2), 572 ],
+                [ Date.UTC(2005, 3), 635 ],
+                [ Date.UTC(2005, 4), 567 ],
+                [ Date.UTC(2005, 5), 523 ],
+                [ Date.UTC(2005, 6), 389 ],
+                [ Date.UTC(2005, 7), 260 ],
+                [ Date.UTC(2005, 8), 452 ],
+                [ Date.UTC(2005, 9), 673 ],
+                [ Date.UTC(2005, 10), 457 ],
+                [ Date.UTC(2005, 11), 239 ],
+
+                [ Date.UTC(2006, 0), 324 ],
+                [ Date.UTC(2006, 1), 649 ],
+                [ Date.UTC(2006, 2), 609 ],
+                [ Date.UTC(2006, 3), 530 ],
+                [ Date.UTC(2006, 4), 697 ],
+                [ Date.UTC(2006, 5), 608 ],
+                [ Date.UTC(2006, 6), 336 ],
+                [ Date.UTC(2006, 7), 482 ],
+                [ Date.UTC(2006, 8), 488 ],
+                [ Date.UTC(2006, 9), 415 ],
+                [ Date.UTC(2006, 10), 409 ],
+                [ Date.UTC(2006, 11), 176 ],
+
+                [ Date.UTC(2007, 0), 368 ],
+                [ Date.UTC(2007, 1), 422 ],
+                [ Date.UTC(2007, 2), 778 ],
+                [ Date.UTC(2007, 3), 1455 ],
+                [ Date.UTC(2007, 4), 678 ],
+                [ Date.UTC(2007, 5), 624 ],
+                [ Date.UTC(2007, 6), 363 ],
+                [ Date.UTC(2007, 7), 325 ],
+                [ Date.UTC(2007, 8), 490 ],
+                [ Date.UTC(2007, 9), 809 ],
+                [ Date.UTC(2007, 10), 3383 ],
+                [ Date.UTC(2007, 11), 1423 ],
+
+                [ Date.UTC(2008, 0), 1587 ],
+                [ Date.UTC(2008, 1), 1690 ],
+                [ Date.UTC(2008, 2), 1259 ],
+                [ Date.UTC(2008, 3), 3317 ],
+                [ Date.UTC(2008, 4), 2463 ],
+                [ Date.UTC(2008, 5), 3185 ],
+                [ Date.UTC(2008, 6), 3233 ],
+                [ Date.UTC(2008, 7), 4037 ],
+                [ Date.UTC(2008, 8), 2637 ],
+                [ Date.UTC(2008, 9), 2097 ],
+                [ Date.UTC(2008, 10), 2677 ],
+                [ Date.UTC(2008, 11), 2533 ],
+
+                [ Date.UTC(2009, 0), 2153 ],
+                [ Date.UTC(2009, 1), 3022 ],
+                [ Date.UTC(2009, 2), 3078 ],
+                [ Date.UTC(2009, 3), 4828 ],
+                [ Date.UTC(2009, 4), 2850 ],
+                [ Date.UTC(2009, 5), 105764 ],
+                [ Date.UTC(2009, 6), 2967 ],
+                [ Date.UTC(2009, 7), 1456 ],
+                [ Date.UTC(2009, 8), 3939 ],
+                [ Date.UTC(2009, 9), 3184 ],
+                [ Date.UTC(2009, 10), 3417 ],
+                [ Date.UTC(2009, 11), 2546 ],
+
+                [ Date.UTC(2010, 0), 4598 ],
+                [ Date.UTC(2010, 1), 2889 ],
+                [ Date.UTC(2010, 2), 4005 ],
+                [ Date.UTC(2010, 3), 3784 ],
+                [ Date.UTC(2010, 4), 4252 ],
+                [ Date.UTC(2010, 5), 3833 ],
+                [ Date.UTC(2010, 6), 3082 ],
+                [ Date.UTC(2010, 7), 1475 ],
+                [ Date.UTC(2010, 8), 7358 ],
+                [ Date.UTC(2010, 9), 4873 ],
+                [ Date.UTC(2010, 10), 4057 ],
+                [ Date.UTC(2010, 11), 3284 ],
+
+                [ Date.UTC(2011, 0), 4418 ],
+                [ Date.UTC(2011, 1), 4867 ],
+                [ Date.UTC(2011, 2), 4901 ],
+                [ Date.UTC(2011, 3), 4248 ],
+                [ Date.UTC(2011, 4), 5425 ],
+                [ Date.UTC(2011, 5), 7537 ],
+                [ Date.UTC(2011, 6), 5343 ],
+                [ Date.UTC(2011, 7), 3290 ],
+                [ Date.UTC(2011, 8), 6366 ],
+                [ Date.UTC(2011, 9), 5563 ],
+                [ Date.UTC(2011, 10), 6374 ],
+                [ Date.UTC(2011, 11), 3237 ],
+
+                [ Date.UTC(2012, 0), 5202 ],
+                [ Date.UTC(2012, 1), 4818 ],
+                [ Date.UTC(2012, 2), 3123 ],
+                [ Date.UTC(2012, 3), 2572 ],
+                [ Date.UTC(2012, 4), 3349 ],
+                [ Date.UTC(2012, 5), 2772 ],
+                [ Date.UTC(2012, 6), 1837 ],
+                [ Date.UTC(2012, 7), 3766 ],
+                [ Date.UTC(2012, 8), 2751 ],
+                [ Date.UTC(2012, 9), 3856 ],
+                [ Date.UTC(2012, 10), 3045 ],
+                [ Date.UTC(2012, 11), 1608 ],
+
+                [ Date.UTC(2013, 0), 2146 ],
+                [ Date.UTC(2013, 1), 3468 ],
+                [ Date.UTC(2013, 2), 2868 ],
+                [ Date.UTC(2013, 3), 2253 ],
+                [ Date.UTC(2013, 4), 1952 ],
+                [ Date.UTC(2013, 5), 2238 ],
+                [ Date.UTC(2013, 6), 2536 ],
+                [ Date.UTC(2013, 7), 596 ],
+                [ Date.UTC(2013, 8), 2691 ],
+                [ Date.UTC(2013, 9), 2277 ],
+                [ Date.UTC(2013, 10), 2628 ],
+                [ Date.UTC(2013, 11), 1117 ],
+
+                [ Date.UTC(2014, 0), 1751 ],
+                [ Date.UTC(2014, 1), 2163 ],
+                [ Date.UTC(2014, 2), 1463 ],
+                [ Date.UTC(2014, 3), 1444 ],
+                [ Date.UTC(2014, 4), 1750 ],
+                [ Date.UTC(2014, 5), 3741 ],
+                [ Date.UTC(2014, 6), 2489 ],
+                [ Date.UTC(2014, 7), 348 ]
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>

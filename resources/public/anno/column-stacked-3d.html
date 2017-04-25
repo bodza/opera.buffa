@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Column chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                depth: 150
+            },
+            marginTop: 90
+        },
+        title: {
+            text: 'A jegyzékek száma évszázadonként'
+        },
+        subtitle: {
+            text: 'A keletkezési ország szerint rétegezve'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#ffffff',
+            borderWidth: 1
+        },
+        xAxis: {
+            categories: ['XVI. század', 'XVII. század', 'XVIII. század'],
+            labels: {
+                style: {
+                    fontSize: '13px'
+                }
+            }
+        },
+        yAxis: {
+            allowDecimals: false,
+            title: {
+                text: 'Jegyzékek száma'
+            }
+        },
+        tooltip: {
+            headerFormat: '<b>{point.key}</b><br/>',
+            pointFormat: '{series.name}: {point.y} / {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                depth: 120
+            }
+        },
+        series: [{
+            name: 'Ausztria',
+            data: [9, 96, 15]
+        }, {
+            name: 'Csehország',
+            data: [null, 1, null]
+        }, {
+            name: 'Hollandia',
+            data: [null, 4, 2]
+        }, {
+            name: 'Horvátország',
+            data: [null, 4, null]
+        }, {
+            name: 'Lengyelország',
+            data: [null, null, 3]
+        }, {
+            name: 'Magyarország',
+            data: [13, 214, 200]
+        }, {
+            name: 'Németország',
+            data: [2, 6, 2]
+        }, {
+            name: 'Olaszország',
+            data: [2, 5, null]
+        }, {
+            name: 'Románia',
+            data: [31, 308, 179]
+        }, {
+            name: 'Svájc',
+            data: [null, 2, null]
+        }, {
+            name: 'Szlovákia',
+            data: [75, 447, 57]
+        }, {
+            name: 'Törökország',
+            data: [null, null, 2]
+        }, {
+            name: 'Ukrajna',
+            data: [null, null, 8]
+        }]
+    });
+});
+</script>
+</body>
+</html>

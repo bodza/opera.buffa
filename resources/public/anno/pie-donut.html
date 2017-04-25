@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Donut chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 770px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    var colors = Highcharts.getOptions().colors,
+        categories = ['Szlovákia', 'Románia', 'Magyarország', 'Ausztria', 'Ukrajna', 'Olaszország'],
+        data = [{
+            y: 481,
+            color: colors[0],
+            drilldown: {
+                name: 'szlovák városok',
+                categories: ['Besztercebánya', 'Selmecbánya', 'Kassa', 'Lőcse', 'Körmöcbánya', 'Pozsony', 'Eperjes', 'Nagyszombat', 'Garamszentbenedek', 'Bártfa', 'Szakolca', 'Késmárk'],
+                data: [104, 85, 83, 66, 37, 28, 23, 20, 17, 8, 5, 5],
+                color: colors[0]
+            }
+        }, {
+            y: 452,
+            color: colors[1],
+            drilldown: {
+                name: 'román városok',
+                categories: ['Nagyszeben', 'Beszterce', 'Kolozsvár', 'Segesvár', 'Brassó', 'Gyulafehérvár', 'Gernyeszeg', 'Nagyenyed', 'Nagybánya', 'Marosvásárhely', 'Székelyudvarhely', 'Fogaras', 'Szeben'],
+                data: [128, 93, 53, 50, 34, 17, 17, 12, 12, 12, 10, 8, 6],
+                color: colors[1]
+            }
+        }, {
+            y: 272,
+            color: colors[2],
+            drilldown: {
+                name: 'magyar városok',
+                categories: ['Sopron', 'Kőszeg', 'Debrecen', 'Sárospatak', 'Buda', 'Szatmár', 'Kóka', 'Jobbágyi', 'Ecseg', 'Tóalmás', 'Pest'],
+                data: [147, 27, 27, 21, 16, 6, 6, 6, 6, 5, 5],
+                color: colors[2]
+            }
+        }, {
+            y: 59,
+            color: colors[3],
+            drilldown: {
+                name: 'osztrák városok',
+                categories: ['Ruszt', 'Németújvár', 'Bécs', 'Kismarton'],
+                data: [35, 11, 8, 5],
+                color: colors[3]
+            }
+        }, {
+            y: 7,
+            color: colors[4],
+            drilldown: {
+                name: 'ukrán város',
+                categories: ['Ungvár'],
+                data: [7],
+                color: colors[4]
+            }
+        }, {
+            y: 6,
+            color: colors[5],
+            drilldown: {
+                name: 'olasz város',
+                categories: ['Padova'],
+                data: [6],
+                color: colors[5]
+            }
+        }],
+        countriesData = [],
+        townsData = [],
+        dataLen = data.length;
+
+    for (var i = 0; i < dataLen; i += 1) {
+
+        countriesData.push({
+            name: categories[i],
+            y: data[i].y,
+            color: data[i].color
+        });
+
+        var len = data[i].drilldown.data.length;
+        for (var j = 0; j < len; j += 1) {
+            var brightness = 0.2 - (j / len) / 5;
+            townsData.push({
+                name: data[i].drilldown.categories[j],
+                y: data[i].drilldown.data[j],
+                color: Highcharts.Color(data[i].color).brighten(brightness).get()
+            });
+        }
+    }
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'A jegyzékek száma (min. 5) keletkezési hely szerint'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y}',
+                    connectorColor: 'silver'
+                },
+                shadow: true,
+                center: ['50%', '50%']
+            }
+        },
+        series: [{
+            name: 'részesedése',
+            data: countriesData,
+            size: '60%',
+            dataLabels: {
+                formatter: function () {
+                    return (this.y > 5) ? this.point.name : null;
+                },
+                color: 'white',
+                distance: -100
+            }
+        }, {
+            name: 'részesedése',
+            data: townsData,
+            size: '80%',
+            innerSize: '60%',
+            dataLabels: {
+                formatter: function () {
+                    return (this.y > 1) ? '<b>' + this.point.name + ':</b> ' + this.y : null;
+                }
+            }
+        }]
+    });
+});
+</script>
+</body>
+</html>

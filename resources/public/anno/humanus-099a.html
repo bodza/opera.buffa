@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Pie chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 50
+            }
+        },
+        title: {
+            text: 'HUMANUS feldolgozottsági szint részesedése'
+        },
+        subtitle: {
+            text: '<b>099$a</b> almező alapján'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 60,
+                innerSize: 160,
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y}',
+                    connectorColor: 'silver'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'részesedése',
+            data: [
+                [ 'teljes', 3629 ],
+                [ 'válogató', 1910 ],
+                [ 'szórványos', 623 ],
+                [ 'válogató módon, ... részben feldolgozva', 15 ],
+                [ 'válogató, hiányosan', 9 ],
+                [ 'válogató, hiánytalanul', 8 ],
+                [ 'anyagának egy része érhető el digitalizált formában', 7 ],
+                [ 'teljes anyaga elérhető digitalizált formában', 5 ],
+                [ 'hiányosan, de részegységenként teljesen', 5 ],
+                [ 'digitálisan', 3 ],
+                [ 'teljes, hiányosan', 2 ],
+                {
+                    name: 'Humanus mutatványszám',
+                    y: 1,
+                    sliced: true,
+                    selected: true
+                }
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Koraújkor, Mokka-R, Humanus teszt grafikonok</title>
+</head>
+<body style="margin: 2em; text-align: center;">
+<h1>Koraújkor, Mokka-R, Humanus teszt grafikonok</h1>
+<div style="text-align: justify;">
+<p>A grafikonok alapja minden esetben valódi friss adatsor, amit egyenként manuálisan normalizáltam,
+majd az ábrázoláshoz szükséges adatszerkezetre alakítottam: ez utóbbi az egyes weblapok szövegében
+tetten érhető és értelmezhető. (pl. Firefox esetén ctrl-u megmutatja: a grafikonok nem pixeles
+képek, hanem vektoros ábrák (SVG), így tetszőlegesen skálázhatóak, akár nyomtatáshoz is jó minőségben,
+ill. egyes esetekben interaktívak; több látványos lehetőséget is kipróbáltam, persze nem kell
+túlcsicsázni, csak amennyire épp szükséges.)</p>
+<p>Nagyjából egy tucat grafikon-típus bizonyult hasznosnak, amelyek szorosan kötődnek az aktuális
+adatsor jellegéhez: nem lehet, azaz nem érdemes minden lehetséges statisztikát az összes lehetséges
+formában ábrázolni, a grafikonok automatikus generálásakor szükség lesz némi gépi bölcsességre,
+hogy a megfelelő reprezentációt tálalja az adatok mennyisége, változatossága, eloszlása, stb.
+alapján. Persze több helyes megoldás is születhet.</p>
+<p>Augusztus 16-tól 23-ig egy hétre volt szükségem, hogy kitanuljam a
+<a href="http://highcharts.com/">highcharts</a> nevű grafikon-rajzoló eszköznek a használatát,
+mind a <a href="http://highcharts.com/demo">72 demo</a> példát plusz a térképeket (ez utóbbiak
+egyelőre haszontalannak bizonyultak), közben elkészítettem az alábbi 56 vázlatot. Ezt a jószágot
+korábban nem ismertem, de nagyon nem bántam meg: valóban igen kellemes keretrendszer.</p>
+<p>Most már szinte bármilyen [kellően józan] lekérdezéshez 1/2-3 óra alatt el tudom készíteni a
+grafikus ábrázolását; ahhoz azonban, hogy mindezt beépítsem az élő adatbázisba, jó eséllyel
+min. 2 hétre lenne szükség, persze utána nagyon jó világ lesz, de előtte javaslom, hogy a
+szeptemberi előadásodhoz használj fel az alábbi készletből, vagy még inkább: fogalmazz meg
+újabb pontos lekérdezéseket és én nagy örömmel legyártom a grafikont, amit így már hamar be
+tudnál építeni a prezentációba én pedig nyugodtabban tudnék haladni az adatbázis kialakításával.</p>
+<p>Ha a címeket, címkéket, felhőcskéket (tooltip), egyéb magyarázó szövegeket németül szeretnéd
+olvasni, ahhoz majd segítséget kérek, mert tapló módon csak angolul boldogulok, ill. valamennyi
+német, latin és ómagiar ragadt rám a koraújkorból, de az ehhez már szerintem kevés lesz.</p>
+<p>Első adatsorom rém egyszerűnek tűnt: a jegyzékek keletkezési helye és ideje éves bontásban
+persze a kéziratok számossága végett. Itt mindjárt jött két normalizálási feladat: a dátumok
+esetén el kell jutnunk egyetlen évszámhoz: de mi van, ha több a dátum, vagy kérdőjeles, vagy
+intervallum, vagy század második fele, vagy egyáltalán nincs; most a teszt kedvéért igyekeztem
+a legegyerűbb módon megoldani, így néhány jegyzék ki is maradt a szórásból, mindegy, viszont
+adatbázisból generálva a normalizálási módszereket formálisan rögzíteni kellene majd.</p>
+<p>A másik normalizálás a keletkezés településének nagyobb földrajzi egysége: egyelőre nem
+áll rendelkezésre a Felvidék, Partium, Erdély, et al. kategorizálás, bár feleségem megpróbálta
+besorolni a városokat, de nem szakértő, így most a teszt idejére inkább maradtam a wikipédia
+jelenlegi országok szerinti besorolásánál. Légyszi az alábbi grafikonoknál nézd el ezt a
+szépséghibát, majd küldök besorolni-való városlistát és akkor újragyártjuk a grafikonokat,
+de most direkt nem ilyen adatszerkezeti kérdésekkel kedtem a beszámolómat, hogy könnyebb
+legyen örülni az eredményeknek, noha a neheze még előttünk áll.</p>
+<p>Tehát ilyen adatsorral indultam el:</p>
+<pre>
+Abony|Magyarország|1744
+Alsónémedi|Magyarország|1744
+Alsónémedi|Magyarország|1744
+Altorja|Magyarország|1697
+Altorja|Magyarország|1707
+Amsterdam|Hollandia|1680
+Bag|Magyarország|1716
+Bag|Magyarország|1746
+Bag|Magyarország|1746
+Báji|Magyarország|1738
+Balázsfalva|Románia|1735
+Barskapronca|Szlovákia|1626
+Barskapronca|Szlovákia|1647
+...
+Zabola|Románia|1680
+Zilah|Románia|1689
+Zólyom|Szlovákia|1589
+Zólyom|Szlovákia|1589
+Zólyom|Szlovákia|1622
+Zólyom|Szlovákia|1647
+Zundrava|Ausztria|1659
+Zundrava|Ausztria|1659
+Zsámbok|Magyarország|1725
+Zsámbok|Magyarország|1727
+Zsarnóca|Szlovákia|1674
+Zsolna|Szlovákia|1706
+Zsolna|Szlovákia|1712
+</pre>
+</div>
+<ol style="text-align: left;">
+<li><a href="line.html">line.html</a>
+<p>Triviális ábrázolás: vonalas, évenként önállóan, országonként csoportosítva, külön-külön
+alapszintről mérve: egymást takarják: csúnya. A szinezés alapértelmezés szerinti, persze
+tetszőlegesen lehet rajta változtatni.</p></li>
+<li><a href="spline.html">spline.html</a>
+<p>Előbbi azért csúnyácska, mert a magassági adatok, azaz a jegyzékek száma az egymást követő
+évekkel nem arányosan változik, hanem tekintélyes ingadozással: kvázi össze-vissza. Első
+körben ezen úgy lehetne segíteni, ha a mezei vonal helyett görbület-illesztést (lánykori
+neve: spline) használunk. Sajnos, sokkal nem lett jobb.</p></li>
+<li><a href="line-stacked.html">line-stacked.html</a>
+<p>Tegyük egy kicsit érthetőbbé a képet: a magassági adatok rétegződjenek egymásra, ezáltal
+a jegyzékek száma összeadódik. Hmm.. még mindig száraz és nehezen átlátható, de az abszolút
+magasság már érzékelhetően jellemzi a jegyzékek számát összesen.</p></li>
+<li><a href="spline-stacked.html">spline-stacked.html</a>
+<p>Finomítsunk az előbbin spline használatával. Annyira össze-vissza adatsor, hogy ez sem
+segít sokat. Persze jobb lenne a helyzetünk, ha egy nagyságrenddel több jegyzékünk lenne,
+majd talán a többi adattár feldolgozása után..</p></li>
+<li><a href="line-percent.html">line-percent.html</a>
+<p>Kipróbáltam még az előbbi egymásra rétegződő ábrázolást ezúttal százalékos arányban
+szétterítve a függőleges tengely mentén. Csúcs lett, de nem biztos, hogy mindenkinek.</p></li>
+<li><a href="spline-percent.html">spline-percent.html</a>
+<p>Ugyanez spline finomítással. Detto.</p></li>
+<li><a href="area.html">area.html</a>
+<p>Nézzük meg, mit segít, ha egyszerű vonalak helyett kitöltött felületekkel ábrázoljuk
+ugyanazt az adatsort, amit az előbb vizsgáltunk. Alig lett jobb.</p></li>
+<li><a href="area-spline.html">area-spline.html</a>
+<p>Hátha a spline segít.. nem sokat.</p></li>
+<li><a href="area-stacked.html">area-stacked.html</a>
+<p>Rétegezzük egymásra. Hmm.. nem igazán.</p></li>
+<li><a href="area-stacked-spline.html">area-stacked-spline.html</a>
+<p>Spline? Talán még ez a legkevésbbé gagyi?</p></li>
+<li><a href="area-percent.html">area-percent.html</a>
+<p>A szimmetria kedvéért: százalékos arány. Valamit ez is megmutat.</p></li>
+<li><a href="area-percent-spline.html">area-percent-spline.html</a>
+<p>Százalékos spline. Biztos akad, akinek kedvence..</p></li>
+<li><a href="spline-stacked-sum10.html">spline-stacked-sum10.html</a>
+<p>Most, hogy láttuk, mit lehet elérni éves szinten rétegzéssel, vagy anélkül, százalékosan,
+vagy összegszerűen... mi lenne, ha azzal tompítanánk az adatsor irregularitását, hogy
+évtizedenként összevonjuk az adatpontokat? Persze lehetne negyedszázadonként is, vagy
+sűrűbben, mindegy, most könnyű volt az utolsó számjegyet lehagyni az eredményhez: wow!</p></li>
+<li><a href="area-spline-stacked-sum10.html">area-spline-stacked-sum10.html</a>
+<p>Ugyanez terület-kitöltéssel: wow+wow! Ja, e két utóbbinak eleve emeli a szépségét,
+ha görbét (spline) illesztünk a már így is csak közelítő adatpontokra.</p></li>
+<li><a href="spline-percent-sum10.html">spline-percent-sum10.html</a>
+<p>Most ugyanez vonalasan, százalákosan: nekem tecccik.</p></li>
+<li><a href="area-spline-percent-sum10.html">area-spline-percent-sum10.html</a>
+<p>Területi kitöltéssel: még inkább teccik.</p></li>
+<li><a href="pie.html">pie.html</a>
+<p>És most következzen valami egészen más: pie chart -- magyarul nem tudom mi ez: körgrafikon?
+A lényeg, hogy most elbúcsúzunk egy rövid időre az időtengelytől és az ábrázolható kategóriák
+száma korlátozott, de igen látványos. A cikk(ely)ek kattinthatóak.</p></li>
+<li><a href="pie-3d.html">pie-3d.html</a>
+<p>És mi lenne, ha beforgatnánk térbe? Na, ettől már bizsereg.</p></li>
+<li><a href="pie-drilldown.html">pie-drilldown.html</a>
+<p>Akkor most tegyünk rá egy lapáttal: az országokban laknak városok: kattints egy cikk(ely)re.</p></li>
+<li><a href="pie-drilldown-ordered.html">pie-drilldown-ordered.html</a>
+<p>Kicsit kusza, ha sok a város. Mi lenne, ha nem ABC szerint, hanem az adott helyen
+keletkezett jegyzékek száma szerint rendeznénk az óra járásával megegyezően.. talán jobb lett.</p></li>
+<li><a href="pie-drilldown-ordered-3d.html">pie-drilldown-ordered-3d.html</a>
+<p>Forgassuk be térbe és lyukasszuk ki a közepét: wowwww!</p></li>
+<li><a href="pie-drilldown-ordered-min5.html">pie-drilldown-ordered-min5.html</a>
+<p>Csökkentsük a számosságot: azok a városok számítanak, ahol min. 5 jegyzék keletkezett.</p></li>
+<li><a href="pie-drilldown-ordered-min5-3d.html">pie-drilldown-ordered-min5-3d.html</a>
+<p>Mindez térben.</p></li>
+<li><a href="pie-donut.html">pie-donut.html</a>
+<p>A végére édesség: fánk! Kicsit egymásra másznak címkék, nem jöttem rá hamar, majd egyszer.</p></li>
+<li><a href="column-drilldown-ordered-min5.html">column-drilldown-ordered-min5.html</a>
+<p>Még mindig ugyanannál az adatsornál tartunk. Most jöjjenek a mezei oszlopok, persze
+mind kattintható, csak kicsit csökkenteni kellett a számosságukat.</p></li>
+<li><a href="column-drilldown-ordered-min5-3d.html">column-drilldown-ordered-min5-3d.html</a>
+<p>Forgassuk térbe! Még mindig kattinthatóan.</p></li>
+<li><a href="column-drilldown-ordered-min5-3d-slider.html">column-drilldown-ordered-min5-3d-slider.html</a>
+<p>Most aztán forgathatod Te is! Még mindig kattinthatóan.</p></li>
+<li><a href="column-drilldown-inverted.html">column-drilldown-inverted.html</a>
+<p>Most kicsit másképp forgatva: álló oszlopok helyett kidőlt oszlopok. Függőlegesen így talán
+sokkal több fér el, sőt.</p></li>
+<li><a href="column-stacked-3d.html">column-stacked-3d.html</a>
+<p>Most rétegezzük az oszlopokat. Térben.</p></li>
+<li><a href="column-stacked-3d-verso.html">column-stacked-3d-verso.html</a>
+<p>Mint előbb és ha megfogod a bal egérgombbal, még forgathatod is! Yuck!</p></li>
+<li><a href="scatter.html">scatter.html</a>
+<p>Még mindig ugyanannál az adatsornál tartunk. Pedig következzen valami egészen más:
+pöttyök szétszórva: megfigyelendő a kvantálási jelenség a függőleges tengely (jegyzékek
+száma) szűk értékkészlete okán.</p></li>
+<li><a href="scatter-3d.html">scatter-3d.html</a>
+<p>Mindez térben és ha megfogod: forgatható, valamint az ország nevére kattintva
+ki/bekapcsolható az értékkészlete. Van benne egy kis halszem optika torzítás,
+majd kiveszem, ha rájövök.</p></li>
+<li><a href="bubble.html">bubble.html</a>
+<p>Non-plus-ultra: buborékok: kellett egy harmadik numerikus érték: erőltetett, de
+működik: a buborék mérete arányos az adott időben jegyzéket megjelentető országok
+számával.</p></li>
+<li><a href="bubble-map.html">bubble-map.html</a>
+<p>Plus-ultra: a buborékok városok, méretük arányos az adott időben keletkezett
+jegyzékek számával ÉS a helyzetük GPS koordináták alapján hozzávetőleges
+földrajzi pozíciójukat jelzi: naív térkép ÉS nagyítható mindkét tengely mentén,
+valamint a SHIFT lenyomásával vízszintesen görgethető a nagyítás.</p></li>
+<li><a href="heatmap.html">heatmap.html</a>
+<p>Ultra-plus-ultra: hőtérkép (heatmap) azaz hol-mikor keletkezett a legtöbb
+jegyzék. Persze ebből lehetne buborékos is, de nem akartam túlzásba vinni.</p></li>
+<li><a href="pyramid.html">pyramid.html</a>
+<p>Hab a tortán: egyre speciálisabb feltételek szerint: piramis.</p></li>
+<li><a href="range.html">range.html</a>
+<p>Eddig tartott az első adatsor. Pont. Most pedig nézzük a főnemesek életét:
+fekvő oszlop-intervallum.</p></li>
+<li><a href="range-pie.html">range-pie.html</a>
+<p>Mindez kombinálva a nemük és felekezeti hovatartozásuk szerint kiegészítő
+körgrafikonokkal. Innen is látszik, ha a protestánsok nem osztódtak volna,
+lenyomták volna a katolikusokat; így fan ez nálunk (is).</p></li>
+<li><a href="tree.html">tree.html</a>
+<p>Nem csak népességfa lehet ilyen szerkezetű, hanem felekezeti-fa is.</p></li>
+<li><a href="tree-pie.html">tree-pie.html</a>
+<p>Kiegészítő körgrafikonnal, mert kínálkozott egy kis szabad terület.
+Ebből is látszik, ha a köznép számít, a lutheránusok győztek.</p></li>
+<li><a href="pie-3d-ortus.html">pie-3d-ortus.html</a>
+<p>Innentől a ténylegesen feltett kérdéseidre válaszolok esetleges szűkítések
+nélkül, mert grafikonok ezen teszt állapotában az nem-oszt-szoroz, csak csökkenti
+az adatsor méretét. Tehát: a társdadalmi rang aránya körgrafikonon.</p></li>
+<li><a href="pie-3d-offic.html">pie-3d-offic.html</a>
+<p>Ugyanez a foglalkozások szerint.</p></li>
+<li><a href="bar-offic.html">bar-offic.html</a>
+<p>Mivel igen tekintélyes a foglalkozások értékkészlete, inkább a fekvő
+oszlopok segitenek, kiemelve körgrafikonon a legnépszerűbb szakmákat.</p></li>
+<li><a href="heatmap-typo.html">heatmap-typo.html</a>
+<p>Forrástipológia-hőtérkép. Győzött a hagyatéki összeírás.</p></li>
+<li><a href="seneca-ortus.html">seneca-ortus.html</a>
+<p>Leginkább polgárok olvasták Seneca műveit, főleg a 17. század 3. negyedében,
+vagy csak ebbe az irányba torzít a jegyzékek jelen összeállítása.</p></li>
+<li><a href="seneca-religio.html">seneca-religio.html</a>
+<p>A legtöbben katolikusok olvasták Seneca műveit, főleg a 17. század 3. negyedében,
+vagy csak ebbe az irányba torzít a jegyzékek jelen összeállítása.</p></li>
+<li><a href="mokka-r-cent.html">mokka-r-cent.html</a>
+<p>Most pedig következzen valami egészen más: a Mokka-R helyben, tehát közvetlenül
+hozzáférhető másolatban tárolt rekordjai alapján: a kötetek keletkezési ideje
+évszázadok szerint, az egyszerűség kedvéért beleértve a facsimile kiadásokat is.</p></li>
+<li><a href="mokka-r-bibl.html">mokka-r-bibl.html</a>
+<p>Mokka-R gyűjtemények mérete kötetek (~ rekordok) száma szerint. Lehet, hogy
+nem jól gondolom, de <i>bibliográfia</i> címkével külön számoltam az <i>Apponyi</i>,
+<i>RMK</i> és <i>RMNy</i> állományokat.</p></li>
+<li><a href="mokka-r-datum.html">mokka-r-datum.html</a>
+<p>Mokka-R kötetek száma megjelenési év szerint. Itt nem kellett évtizedre
+összesíteni és jót tett neki a spline, mert ez egy olyan adatsor. Figyelemre
+méltó az évszázadonként emelkedő fűrészfog. Nem tudom mi az oka, de ez valami
+artifact.</p></li>
+<li><a href="mokka-r-innen.html">mokka-r-innen.html</a>
+<p>Hőtérkép határon innen.</p></li>
+<li><a href="mokka-r-onnan.html">mokka-r-onnan.html</a>
+<p>Hőtérkép határon túl. Bocsi, ha esetleg a Helischer gyűjteményt rossz
+helyre soroltam, most a teszt idejére így sikerült.</p></li>
+<li><a href="mokka-r-app.html">mokka-r-app.html</a>
+<p>MNB és Mokka-R metszetének hőtérképe. Ha ez ugyan az MNB; nem vagyok kellően képzett.</p></li>
+<li><a href="humanus-099b.html">humanus-099b.html</a>
+<p>Eddig volt Eruditio és Mokka-R. Mivel lenne Humanus et al. felé kapcsolat és
+mivel jelen projekten küzdve a nyáron elhanyagoltam Kincsőt, talán engesztelésül is
+készítettem négy pillanatképet a Humanus jelenéből és múltjából. Elsőként
+a feldolgozó intézmények aránya.</p></li>
+<li><a href="humanus-099a.html">humanus-099a.html</a>
+<p>Majd a feldolgozás jellege/foka.</p></li>
+<li><a href="humanus-creat8-modif5.html">humanus-creat8-modif5.html</a>
+<p>Humanus rekordok adatai alapján 2000 óta (átemeléssel, ill. konverzióval
+számos tétel került a rendszerbe annak hivatalos indulása előtti időkből)
+a létrehozások és módosítások száma.</p></li>
+<li><a href="humanus-creat-modif.html">humanus-creat-modif.html</a>
+<p>Tényleges létrehozások és módosítások száma szerkesztői napló alapján.</p></li>
+</ol>
+<p>Egyelőre ennyi.</p>
+<div style="justified">
+<p>Apropo: minden grafikon jobb felső sarkában három vízszintes vonal: egy menü,
+ahonnan kinyomtathatod, ill. lementheted a képet, ha ez segít valamiben.</p>
+</div>
+</body>
+</html>

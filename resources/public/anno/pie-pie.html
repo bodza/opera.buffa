@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Pie drilldown chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 770px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    Highcharts.data( {
+        csv: document.getElementById('psv').innerHTML,
+        itemDelimiter: '|',
+        parsed: function (columns) {
+
+            var regios = {}, places = {};
+
+            $.each(columns[0], function (i, name) {
+                if (i > 0) {
+                    var regio = columns[0][i], place = columns[1][i], nof = columns[2][i];
+
+                    if (!regios[regio]) {
+                        regios[regio] = nof;
+                    } else {
+                        regios[regio] += nof;
+                    }
+
+                    if (!places[regio]) {
+                        places[regio] = [];
+                    }
+                    places[regio].push([place, nof]);
+                }
+            });
+
+            var regiosData = [], drilldownSeries = [];
+
+            $.each(regios, function (name, y) {
+                regiosData.push({
+                    name: name,
+                    y: y,
+                    drilldown: places[name] ? name : null
+                });
+            });
+            $.each(places, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            $('#container').highcharts( {
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 50
+                    }
+                },
+                title: {
+                    text: 'A jegyzékek száma keletkezési hely szerint'
+                },
+                subtitle: {
+                    text: 'Kattints a földrajzi egységre: jegyzékek száma települések szerint'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 60,
+                        innerSize: 160,
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y}',
+                            connectorColor: 'silver'
+                        }
+                    }
+                },
+                series: [{
+                    name: 'részesedése',
+                    colorByPoint: true,
+                    data: regiosData
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+        }
+    });
+});
+</script>
+<pre id="psv" style="display: none;">Nagyobb földrajzi egység|Település|Jegyzékek száma
+Felföld|Besztercebánya|104
+Felföld|Selmecbánya|85
+Felföld|Kassa|83
+Felföld|Lőcse|66
+Felföld|Körmöcbánya|37
+Felföld|Pozsony|28
+Felföld|Eperjes|23
+Felföld|Sárospatak|21
+Felföld|Nagyszombat|20
+Felföld|Garamszentbenedek|17
+Felföld|Bártfa|8
+Felföld|Ungvár|7
+Felföld|Késmárk|5
+Felföld|Szakolca|5
+Felföld|Karvaly|4
+Felföld|Lelesz|4
+Felföld|Nyitra|4
+Felföld|Trencsén|4
+Felföld|Barskapronca|3
+Felföld|Garamkürtös|3
+Felföld|Garammindszent|3
+Felföld|Garamszentkereszt|3
+Felföld|Nagysáros|3
+Felföld|Sasvár|3
+Felföld|Zólyom|3
+Felföld|Belec|2
+Felföld|Csiffár|2
+Felföld|Divény|2
+Felföld|Érsekújvár|2
+Felföld|Felvidék|2
+Felföld|Illava|2
+Felföld|Kisszeben|2
+Felföld|Léva|2
+Felföld|Mogyorómál|2
+Felföld|Nyitrazávod|2
+Felföld|Szepeshely|2
+Felföld|Verebély|2
+Felföld|Zsolna|2
+Felföld|Báji|1
+Felföld|Beckó|1
+Felföld|Biccse|1
+Felföld|Bodok|1
+Felföld|Cseklész|1
+Felföld|Csetnek|1
+Felföld|Ezeke|1
+Felföld|Farkasfalva|1
+Felföld|Fülek|1
+Felföld|Galgóc|1
+Felföld|Garamszőllős|1
+Felföld|Garany|1
+Felföld|Gömör megye|1
+Felföld|Hajnik|1
+Felföld|Hunfalva|1
+Felföld|Ipolyság|1
+Felföld|Jánosgyarmat|1
+Felföld|Jászó|1
+Felföld|Karancs Beriny|1
+Felföld|Kasza|1
+Felföld|Kiskeresnye|1
+Felföld|Kistapolcsány|1
+Felföld|Korlát|1
+Felföld|Losonc|1
+Felföld|Makovicza|1
+Felföld|Márkusfalva|1
+Felföld|Missen|1
+Felföld|Modor|1
+Felföld|Munkács|1
+Felföld|Nagybresztovány|1
+Felföld|Nagylócsa|1
+Felföld|Nagytapolcsány|1
+Felföld|Pozsonybeszterce|1
+Felföld|Regéc|1
+Felföld|Sátoraljaújhely|1
+Felföld|Savnik|1
+Felföld|Stolzenburg|1
+Felföld|Szalánc|1
+Felföld|Szedikert|1
+Felföld|Szelnice|1
+Felföld|Szentmihály|1
+Felföld|Szepesvár|1
+Felföld|Szklabinya|1
+Felföld|Temetvény|1
+Felföld|Turóc|1
+Felföld|Vágsellye|1
+Felföld|Zólyom vármegye|1
+Felföld|Zsarnóca|1
+Erdély|Nagyszeben|133
+Erdély|Beszterce|93
+Erdély|Kolozsvár|53
+Erdély|Segesvár|50
+Erdély|Brassó|34
+Erdély|Gernyeszeg|19
+Erdély|Gyulafehérvár|18
+Erdély|Marosvásárhely|12
+Erdély|Nagyenyed|12
+Erdély|Székelyudvarhely|10
+Erdély|Fogaras|8
+Erdély|Erdély|4
+Erdély|Gyergyóalfalu|4
+Erdély|Radnót|4
+Erdély|Torda|4
+Erdély|Keresd|3
+Erdély|Altorja|2
+Erdély|Brulya|2
+Erdély|Csíksomlyó|2
+Erdély|Fenyőfalva|2
+Erdély|Mártonhegy|2
+Erdély|Prépostfalva|2
+Erdély|Rozsonda|2
+Erdély|Szászváros|2
+Erdély|Zabola|2
+Erdély|Balázsfalva|1
+Erdély|Bátos|1
+Erdély|Borberek|1
+Erdély|Borsmonostor|1
+Erdély|Csépán|1
+Erdély|Csíkszentmihály|1
+Erdély|Dál|1
+Erdély|Ebesfalva|1
+Erdély|Egerbegy|1
+Erdély|Gerdály|1
+Erdély|Grossfeld|1
+Erdély|Gyergyószárhegy|1
+Erdély|Holcmány|1
+Erdély|Homoródszentmárton v. Ürmös|1
+Erdély|Huszt|1
+Erdély|Keresztényfalva|1
+Erdély|Kispéterfalva|1
+Erdély|Lesses|1
+Erdély|Malomárka|1
+Erdély|Marienburg|1
+Erdély|Mátranovák|1
+Erdély|Mikháza|1
+Erdély|Nagyajta|1
+Erdély|Netus|1
+Erdély|Rüsz|1
+Erdély|Sajószentivány|1
+Erdély|Szászsebes|1
+Erdély|Szászszentgyörgy|1
+Erdély|Szászújfalu|1
+Erdély|Szászzalatna|1
+Erdély|Szentágota|1
+Erdély|Tarcsafalva|1
+Erdély|Tövis|1
+Erdély|Vajdahunyad|1
+Erdély|Váldhíd|1
+Nyugat Magyarország|Sopron|147
+Nyugat Magyarország|Ruszt|35
+Nyugat Magyarország|Kőszeg|27
+Nyugat Magyarország|Németújvár|11
+Nyugat Magyarország|Kismarton|5
+Nyugat Magyarország|Kishöflány|4
+Nyugat Magyarország|Nezsidér|4
+Nyugat Magyarország|Lajtapordány|3
+Nyugat Magyarország|Pottendorff|3
+Nyugat Magyarország|Kabold|2
+Nyugat Magyarország|Oroszvár|2
+Nyugat Magyarország|Somorja|2
+Nyugat Magyarország|Sopronnyék|2
+Nyugat Magyarország|Szározvám|2
+Nyugat Magyarország|Védeny|2
+Nyugat Magyarország|Zundrava|2
+Nyugat Magyarország|Büdöskút|1
+Nyugat Magyarország|Feketeváros|1
+Nyugat Magyarország|Felsőlászló|1
+Nyugat Magyarország|Fertőszéleskút|1
+Nyugat Magyarország|Fraknó|1
+Nyugat Magyarország|Hof am Leithagebirge|1
+Nyugat Magyarország|Királyfalva|1
+Nyugat Magyarország|Kisboldogasszony|1
+Nyugat Magyarország|Köpcsény|1
+Nyugat Magyarország|Lók|1
+Nyugat Magyarország|Loretto|1
+Nyugat Magyarország|Mannersdorff|1
+Nyugat Magyarország|Miklósfalva|1
+Nyugat Magyarország|Nyulas|1
+Nyugat Magyarország|Oszlop|1
+Nyugat Magyarország|Pándorfalu|1
+Nyugat Magyarország|Pordány|1
+Nyugat Magyarország|Répcesarud|1
+Nyugat Magyarország|Szentgyörgy|1
+Nyugat Magyarország|Szentmargitbánya|1
+Nyugat Magyarország|Tormafalu|1
+Nyugat Magyarország|Ujfalu|1
+Nyugat Magyarország|Völgyfalu|1
+Alföld|Debrecen|27
+Alföld|Ecseg|6
+Alföld|Jobbágyi|6
+Alföld|Kóka|6
+Alföld|Pest|5
+Alföld|Tóalmás|5
+Alföld|Buják|4
+Alföld|Romhány|4
+Alföld|Bag|3
+Alföld|Gyöngyös|3
+Alföld|Kálló|3
+Alföld|Pécel|3
+Alföld|Szecső|3
+Alföld|Úri|3
+Alföld|Vác|3
+Alföld|Veresegyháza|3
+Alföld|Alsónémedi|2
+Alföld|Boldog|2
+Alföld|Eger|2
+Alföld|Galgamácsa|2
+Alföld|Magyarnádor|2
+Alföld|Nagykáta|2
+Alföld|Nógrád|2
+Alföld|Nőtincs|2
+Alföld|Palotás|2
+Alföld|Szentlászló|2
+Alföld|Szentlőrinckáta|2
+Alföld|Sziget|2
+Alföld|Szőlős|2
+Alföld|Tereske|2
+Alföld|Tiszaladány|2
+Alföld|Tószeg|2
+Alföld|Üllő|2
+Alföld|Vácszentlászló|2
+Alföld|Abony|1
+Alföld|Bercel|1
+Alföld|Berkesz|1
+Alföld|Csongrád|1
+Alföld|Dunaharaszti|1
+Alföld|Dunakeszi|1
+Alföld|Ecser|1
+Alföld|Fegyvernek|1
+Alföld|Harsány|1
+Alföld|Hatvan|1
+Alföld|Herencsény|1
+Alföld|Hódmezővásárhely|1
+Alföld|Isaszeg|1
+Alföld|Kecskemét|1
+Alföld|Kerepes|1
+Alföld|Kosd|1
+Alföld|Lőrinc|1
+Alföld|Mácsa|1
+Alföld|Mezőkövesd|1
+Alföld|Nagykőrös|1
+Alföld|Nézsa|1
+Alföld|Nógrádverőce|1
+Alföld|Rád|1
+Alföld|Rékas|1
+Alföld|Sári|1
+Alföld|Sokolnitz|1
+Alföld|Sűly|1
+Alföld|Szente|1
+Alföld|Szentmártonkáta|1
+Alföld|Tápióbicske|1
+Alföld|Tápiósüly|1
+Alföld|Tápiószele|1
+Alföld|Tarcal|1
+Alföld|Tiszafüred|1
+Alföld|Tokaj|1
+Alföld|váci egyházmegye|1
+Alföld|Verseg|1
+Alföld|Vis|1
+Dunántúl|Buda|16
+Dunántúl|Esztergom|4
+Dunántúl|Komárom|3
+Dunántúl|Pannonhalma|3
+Dunántúl|Sümeg|3
+Dunántúl|Csáktornya|2
+Dunántúl|Győr|2
+Dunántúl|Horvátkimle|2
+Dunántúl|Pécs|2
+Dunántúl|Sárvár|2
+Dunántúl|Zsámbok|2
+Dunántúl|Bezenye|1
+Dunántúl|Csanak|1
+Dunántúl|Dömölk|1
+Dunántúl|Felsőiszkáz|1
+Dunántúl|Fertőszentmiklós|1
+Dunántúl|Hévíz|1
+Dunántúl|Komárom megye|1
+Dunántúl|Körmend|1
+Dunántúl|Lébény|1
+Dunántúl|Magyaróvár|1
+Dunántúl|Mosonmagyaróvár|1
+Dunántúl|Mosonszolnok|1
+Dunántúl|Nagykanizsa|1
+Dunántúl|Nagylödő|1
+Dunántúl|Noszlop|1
+Dunántúl|Páli|1
+Dunántúl|Somogyvár|1
+Dunántúl|Tömörd|1
+Dunántúl|Veszprém|1
+Dunántúl|Vizkelet|1
+Dunántúl|Vízvár|1
+Partium|Nagybánya|12
+Partium|Szatmár|6
+Partium|Várad|2
+Partium|Kaplony|1
+Partium|Nagyvárad|1
+Partium|Zilah|1
+Ausztria|Bécs|8
+Ausztria|Grác|2
+Ausztria|Bécsújhely|1
+Németország|Ulm|4
+Németország|Drezda|2
+Németország|Heidelberg|2
+Németország|Northeim|1
+Németország|Tübingen|1
+Németország|Wittenberg|1
+Olaszország|Padova|6
+Olaszország|Bologna|1
+Hollandia|Franeker|4
+Hollandia|Amsterdam|1
+Hollandia|Utrecht|1
+Lengyelország|Boroszló|3
+Lengyelország|Warmia|1
+Svájc|Bázel|2
+Törökország|Konstantinápoly|1
+Törökország|Rodostó|1
+Csehország|Prága|1</pre>
+</body>
+</html>

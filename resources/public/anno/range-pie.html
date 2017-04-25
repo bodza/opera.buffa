@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Combination chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    Highcharts.setOptions({
+        lang: {
+            thousandsSep: ''
+        }
+    });
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'columnrange',
+            inverted: true
+        },
+        title: {
+            text: 'Tulajdonosok élete'
+        },
+        subtitle: {
+            text: 'Főnemesek'
+        },
+        legend: {
+            enabled: false
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        plotOptions: {
+            columnrange: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        series: [{
+            name: 'élt',
+            data: [
+                { name: 'Zay Ferenc', low: 1505, high: 1570 },
+                { name: 'Thurzó (II.) Szaniszló', low: 1531, high: 1586 },
+                { name: 'Illésházy István', low: 1540, high: 1609 },
+                { name: 'Báthory András', low: 1566, high: 1599 },
+                { name: 'Forgách Ferenc', low: 1566, high: 1615 },
+                { name: 'Thurzó (V.) György', low: 1567, high: 1616 },
+                { name: 'Esterházy Miklós', low: 1582, high: 1645 },
+                { name: 'Rákóczi György, I.', low: 1593, high: 1648 },
+                { name: 'Rákóczi Pál', low: 1596, high: 1636 },
+                { name: 'Batthyány I. Ádám', low: 1609, high: 1659 },
+                { name: 'Bethlen János', low: 1613, high: 1678 },
+                { name: 'Thököly Zsigmond', low: 1618, high: 1678 },
+                { name: 'Zrínyi Miklós', low: 1620, high: 1664 },
+                { name: 'Zrínyi Péter', low: 1621, high: 1671 },
+                { name: 'Rákóczi Zsigmond, IV.', low: 1622, high: 1652 },
+                { name: 'Nádasdy Ferenc', low: 1625, high: 1671 },
+                { name: 'Batthyány I. Pál', low: 1629, high: 1674 },
+                { name: 'Apafi Mihály, I.', low: 1629, high: 1690 },
+                { name: 'Batthyány II. Kristóf', low: 1632, high: 1685 },
+                { name: 'Teleki I. Mihály', low: 1634, high: 1690 },
+                { name: 'Csáky István', low: 1635, high: 1699 },
+                { name: 'Eszterházy Pál', low: 1635, high: 1713 },
+                { name: 'Bethlen Miklós', low: 1642, high: 1716 },
+                { name: 'Bethlen Elek', low: 1645, high: 1696 },
+                { name: 'Rákóczi Erzsébet', low: 1655, high: 1707, color: Highcharts.getOptions().colors[5] },
+                { name: 'Thököly Imre', low: 1657, high: 1705 },
+                { name: 'Batthyány II. Ádám', low: 1662, high: 1703 },
+                { name: 'Teleki János', low: 1663, high: 1679 },
+                { name: 'Apafi Mihály, II.', low: 1676, high: 1713 },
+                { name: 'Rákóczi Ferenc, II.', low: 1676, high: 1735 },
+                { name: 'Teleki Pál', low: 1677, high: 1731 },
+                { name: 'Bethlen Kata', low: 1700, high: 1759, color: Highcharts.getOptions().colors[5] }
+            ],
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.low}</b> - <b>{point.high}</b>'
+            }
+        }, {
+            type: 'pie',
+            name: 'nemek aránya',
+            data: [{
+                name: 'nő',
+                y: 2,
+                color: Highcharts.getOptions().colors[5],
+                sliced: true,
+                selected: true
+            }, {
+                name: 'férfi',
+                y: 30,
+                color: Highcharts.getOptions().colors[0]
+            }],
+            center: [610, 80],
+            size: 100,
+            startAngle: 90,
+            showInLegend: false,
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.y}</b> {point.name}: <b>{point.percentage:.2f}</b>%'
+            },
+            allowPointSelect: true
+        }, {
+            type: 'pie',
+            name: 'felekezeti hovatartozás',
+            data: [{
+                name: 'kálvinista',
+                y: 11,
+                color: Highcharts.getOptions().colors[2]
+            }, {
+                name: 'katolikus',
+                y: 15,
+                color: Highcharts.getOptions().colors[1]
+            }, {
+                name: 'lutheránus',
+                y: 6,
+                color: Highcharts.getOptions().colors[3]
+            }],
+            center: [136, 490],
+            size: 160,
+            showInLegend: false,
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.y}</b> {point.name}: <b>{point.percentage:.2f}</b>%'
+            },
+            allowPointSelect: true
+        }]
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Pie drilldown chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 770px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    Highcharts.data( {
+        csv: document.getElementById('psv').innerHTML,
+        itemDelimiter: '|',
+        parsed: function (columns) {
+
+            var countries = {}, towns = {};
+
+            $.each(columns[0], function (i, name) {
+                if (i > 0) {
+                    var country = columns[0][i], town = columns[1][i], nof = columns[2][i];
+
+                    if (!countries[country]) {
+                        countries[country] = nof;
+                    } else {
+                        countries[country] += nof;
+                    }
+
+                    if (!towns[country]) {
+                        towns[country] = [];
+                    }
+                    towns[country].push([town, nof]);
+                }
+            });
+
+            var countriesData = [], drilldownSeries = [];
+
+            $.each(countries, function (name, y) {
+                countriesData.push({
+                    name: name,
+                    y: y,
+                    drilldown: towns[name] ? name : null
+                });
+            });
+            $.each(towns, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            $('#container').highcharts( {
+                chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: 'A jegyzékek száma (min. 5) keletkezési hely szerint'
+                },
+                subtitle: {
+                    text: 'Kattints az országra: jegyzékek száma városok szerint'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                },
+                plotOptions: {
+                    series: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y}',
+                            connectorColor: 'silver'
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Országok',
+                    colorByPoint: true,
+                    data: countriesData
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+        }
+    });
+});
+</script>
+<pre id="psv" style="display: none;">Ország|Város|Jegyzékek száma
+Szlovákia|Besztercebánya|104
+Szlovákia|Selmecbánya|85
+Szlovákia|Kassa|83
+Szlovákia|Lőcse|66
+Szlovákia|Körmöcbánya|37
+Szlovákia|Pozsony|28
+Szlovákia|Eperjes|23
+Szlovákia|Nagyszombat|20
+Szlovákia|Garamszentbenedek|17
+Szlovákia|Bártfa|8
+Szlovákia|Szakolca|5
+Szlovákia|Késmárk|5
+Románia|Nagyszeben|128
+Románia|Beszterce|93
+Románia|Kolozsvár|53
+Románia|Segesvár|50
+Románia|Brassó|34
+Románia|Gyulafehérvár|17
+Románia|Gernyeszeg|17
+Románia|Nagyenyed|12
+Románia|Nagybánya|12
+Románia|Marosvásárhely|12
+Románia|Székelyudvarhely|10
+Románia|Fogaras|8
+Románia|Szeben|6
+Magyarország|Sopron|147
+Magyarország|Kőszeg|27
+Magyarország|Debrecen|27
+Magyarország|Sárospatak|21
+Magyarország|Buda|16
+Magyarország|Szatmár|6
+Magyarország|Kóka|6
+Magyarország|Jobbágyi|6
+Magyarország|Ecseg|6
+Magyarország|Tóalmás|5
+Magyarország|Pest|5
+Ausztria|Ruszt|35
+Ausztria|Németújvár|11
+Ausztria|Bécs|8
+Ausztria|Kismarton|5
+Ukrajna|Ungvár|7
+Olaszország|Padova|6
+</pre>
+</body>
+</html>

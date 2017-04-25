@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Pie chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 50
+            }
+        },
+        title: {
+            text: 'HUMANUS feldolgozó intézmények részesedése'
+        },
+        subtitle: {
+            text: '<b>099$b</b> almező alapján (<i>OSZK/NEKTÁR</i> nélkül)'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                depth: 60,
+                innerSize: 160,
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y}',
+                    connectorColor: 'silver'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'részesedése',
+            data: [
+             // [ 'OSZK/NEKTÁR', 9277 ],
+                {
+                    name: 'OSZK/HBO',
+                    y: 3904,
+                    sliced: true,
+                    selected: true
+                },
+                [ 'IKER', 795 ],
+                [ 'KSZK', 648 ],
+                [ 'feldolgozó intézményre vár', 502 ],
+                [ 'MATARKA', 296 ],
+                [ 'OPKM', 95 ],
+                [ 'OIK', 46 ],
+                [ 'A magyar irodalomtörténet bibliográfiája', 38 ],
+                [ 'SZTE KK', 35 ],
+                [ 'MTA', 18 ],
+                [ 'EOK/MEB', 17 ],
+                [ 'ELTE/AAIK', 11 ],
+                [ 'PTE BTKK', 10 ],
+                [ 'EPA', 9 ],
+                [ 'Illyés Gyula Megyei Könyvtár', 4 ],
+                [ 'Bod Péter Megyei Könyvtár (Románia)', 3 ],
+                [ 'BI', 2 ]
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Bar chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 1800px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    Highcharts.setOptions({
+        lang: {
+         // thousandsSep: ''
+        }
+    });
+
+    // Radialize the colors
+    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Mokka-R taggyűjtemények a kötetek <i>(= rekordok)</i> száma szerint'
+        },
+        legend: {
+            enabled: false
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        tooltip: {
+            headerFormat: '',
+            pointFormat: '{point.name}: <b>{point.y}</b> kötet'
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        series: [{
+            data: [
+                [ 'Debreceni Egyetemi és Nemzeti Könyvtár', 45257 ],
+                [ 'Somogyi-könyvtár', 27114 ],
+                [ 'Esztergomi Főszékesegyházi Könyvtár', 19937 ],
+                [ 'FSZEK OPAC -1850', 18416 ],
+                [ 'SZTE Egyetemi Könyvtár', 16425 ],
+                [ 'ELTE Egyetemi Könyvtár', 13723 ],
+                [ 'Klimó-gyűjtemény', 13214 ],
+                [ 'OSZK Antiqua', 13046 ],
+                [ 'Ráday Könyvtár', 10831 ],
+                [ 'PTEEK OPAC -1850', 8771 ],
+                [ 'Régi Magyar Könyvtár III.', 8457 ],
+                [ 'II. Rákóczi Ferenc Megyei Könyvtár', 8380 ],
+                [ 'Evangélikus Hittudományi Egyetem Könyvtára', 7208 ],
+                [ 'Magyar Országos Levéltár Könyvtára', 7068 ],
+                [ 'Nagykárolyi piarista könyvtár', 6698 ],
+                [ 'Régi Magyar Könyvtár I-II.', 6623 ],
+                [ 'Gyulafehérvári Hittudományi Főiskola Könyvtára', 4525 ],
+                [ 'Debreceni Református Kollégium Könyvtára', 3428 ],
+                [ 'Országgyűlési Könyvtár', 3268 ],
+                [ 'Apponyi Hungarica', 2947 ],
+                [ 'Régi magyarországi nyomtatványok', 2924 ],
+                [ 'KSH Könyvtár', 2584 ],
+                [ 'Reguly Antal Műemlékkönyvtár', 2348 ],
+                [ 'Kaplonyi ferences könyvtár', 2071 ],
+                [ 'Füleki ferences könyvtár', 1928 ],
+                [ 'Szamosújvári örmény könyvtár', 1657 ],
+                [ 'Nagyváradi római katolikus egyházmegyei könyvtár', 1646 ],
+                [ 'Piarista Központi Könyvtár', 1601 ],
+                [ 'Batthyány-gyűjtemény', 1423 ],
+                [ 'SZIE Állatorvos-tudományi Könyvtár', 1162 ],
+                [ 'Kolozsvári Protestáns Teológiai Intézet', 1142 ],
+                [ 'BME OMIKK', 1138 ],
+                [ 'Helischer könyvtár', 1115 ],
+                [ 'FSZEK Antiqua', 991 ],
+                [ 'Zombori Kármelita Rendház Könyvtára', 936 ],
+                [ 'Kecskeméti Református Egyházközség Könyvtára', 877 ],
+                [ 'Nagyenyedi minorita könyvtár', 872 ],
+                [ 'Csurgói Csokonai Vitéz Mihály Református Gimnázium Könyvtára', 704 ],
+                [ 'Országos Pedagógiai Könyvtár és Múzeum', 610 ],
+                [ 'Országos Mezőgazdasági Könyvtár', 596 ],
+                [ 'A kolozsvári római katolikus Lyceum Könyvtár', 507 ],
+                [ 'Kalocsai Főszékesegyházi Könyvtár', 505 ],
+                [ 'Magyar Képzőművészeti Egyetem Könyvtára', 440 ],
+                [ 'Füleki Vármúzeum', 384 ],
+                [ 'MFGI Országos Földtani Szakkönyvtár', 300 ],
+                [ 'Sapientia Szerzetesi Hittudományi Főiskola Könyvtára', 283 ],
+                [ 'Csíkszépvízi örmény könyvtár', 113 ],
+                [ 'RMNy „S” (előkészületben)', 88 ],
+                [ 'Kolozsvári református kollégium könyvtára', 66 ],
+                [ 'Kolozsvári akadémiai könyvtár', 28 ],
+                [ 'Rimaszombat', 9 ]/*,
+                [ 'Kőszegi Evangélikus Egyházközség', 2 ],
+                [ 'Esztergomi Hittudományi Főiskola Könyvtára', 1 ]*/
+            ]
+        }, {
+            type: 'pie',
+            data: [
+                {
+                    sliced: true,
+                    selected: true,
+                    name: 'bibliográfia',
+                    y: 21039,
+                    color: Highcharts.getOptions().colors[1]
+                },
+                {
+                    name: 'határon innen',
+                    y: /*231651*/231648,
+                    color: Highcharts.getOptions().colors[3]
+                },
+                {
+                    name: 'határon túl',
+                    y: 23697,
+                    color: Highcharts.getOptions().colors[2]
+                }
+            ],
+            center: [370, 360],
+            size: 360,
+            innerSize: 56,
+            shadow: true,
+            showInLegend: false,
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.y}</b> {point.name}: <b>{point.percentage:.2f}</b>%'
+            },
+            allowPointSelect: true
+        }]
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Area chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'areaspline',
+            zoomType: 'x'
+        },
+        title: {
+            text: 'A jegyzékek száma keletkezési hely szerint'
+        },
+        subtitle: {
+            text: 'Országonként arányaiban évtizedenként összesítve'
+        },
+        xAxis: {
+            allowDecimals: false,
+            startOnTick: true,
+            endOnTick: false,
+            showLastLabel: true,
+            labels: {
+                formatter: function () {
+                    return this.value; // clean, unformatted number for year
+                }
+            }
+        },
+        yAxis: {
+            floor: 0,
+            title: {
+                text: 'Jegyzékek számának százalékos aránya évtizedenként összesítve'
+            },
+            labels: {
+                formatter: function () {
+                    return this.value + '%';
+                }
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' db'
+        },
+        plotOptions: {
+            areaspline: {
+                stacking: 'percent',
+                pointStart: 1530,
+                pointInterval: 10,
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Ausztria',
+            data: [0, 0, 1, 0, 3, 3, 2, 3, 3, 2, 2, 7, 30, 18, 17, 10, 2, 7, 4, 2, 0, 4, 0]
+        }, {
+            name: 'Magyarország',
+            data: [1, 0, 2, 4, 2, 2, 2, 6, 8, 12, 24, 27, 50, 27, 21, 23, 15, 18, 38, 61, 30, 50, 4]
+        }, {
+            name: 'Románia',
+            data: [0, 1, 0, 1, 2, 10, 13, 11, 12, 15, 27, 24, 41, 40, 42, 45, 48, 44, 29, 31, 35, 44, 3]
+        }, {
+            name: 'Szlovákia',
+            data: [2, 0, 5, 9, 11, 17, 23, 30, 45, 26, 50, 51, 46, 28, 57, 68, 46, 21, 16, 10, 9, 6, 3]
+        }]
+    });
+});
+</script>
+</body>
+</html>

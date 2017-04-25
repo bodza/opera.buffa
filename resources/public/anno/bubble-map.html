@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Highcharts - Bubble chart</title>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 300px; height: 750px; max-width: 900px; margin: 0 auto"></div>
+<script>
+$(function() {
+
+    $('#container').highcharts( {
+        chart: {
+            type: 'bubble',
+            plotBorderWidth: 1,
+            zoomType: 'xy',
+            panning: true,
+            panKey: 'shift'
+        },
+        title: {
+            text: 'A jegyzékek száma (min. 3) keletkezési hely szerint'
+        },
+        subtitle: {
+            text: 'A buborékok városok (a térkép nagyítható, görgethető)'
+        },
+        xAxis: {
+            title: {
+                text: '\u2190 nyugat \u2013 kelet \u2192'
+            },
+            labels: {
+                format: '{value}°'
+            },
+            gridLineWidth: 1
+        },
+        yAxis: {
+            title: {
+                text: '\u2190 dél \u2013 észak \u2192'
+            },
+            labels: {
+                format: '{value}°'
+            },
+            gridLineWidth: 1
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: -60,
+            y: 80,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#ffffff',
+            borderWidth: 1
+        },
+        plotOptions: {
+            bubble: {
+                minSize: '2%',
+                maxSize: '8%',
+                marker: {
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        if (this.point.x < 15 || 50 < this.point.y || 20 < this.point.z)
+                            return this.point.name;
+                        return '';
+                    }
+                }
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.point.name + '</b> városából<br/>' +
+                       '<b>' + this.point.z + '</b> jegyzéket ismerünk';
+            }
+        },
+        series: [{
+            name: 'Ausztria',
+            data: [
+                { name: 'Bécs', y: 48.208333, x: 16.373056, z: 8 },
+                { name: 'Kishöflány', y: 47.840278, x: 16.5, z: 4 },
+                { name: 'Kismarton', y: 47.845556, x: 16.518889, z: 5 },
+                { name: 'Lajtapordány', y: 47.936667, x: 16.48, z: 3 },
+                { name: 'Németújvár', y: 47.059167, x: 16.323056, z: 11 },
+                { name: 'Ruszt', y: 47.802778, x: 16.672222, z: 35 }
+            ],
+            color: Highcharts.getOptions().colors[0],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Hollandia',
+            data: [
+                { name: 'Franeker', y: 53.1875, x: 5.54, z: 4 }
+            ],
+            color: Highcharts.getOptions().colors[1],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[1]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Lengyelország',
+            data: [
+                { name: 'Boroszló', y: 51.11, x: 17.022222, z: 3 }
+            ],
+            color: Highcharts.getOptions().colors[2],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Magyarország',
+            data: [
+                { name: 'Bag', y: 47.63567, x: 19.48374, z: 3 },
+                { name: 'Buda', y: 47.501744, x: 19.033336, z: 16 },
+                { name: 'Buják', y: 47.88543, x: 19.54028, z: 4 },
+                { name: 'Debrecen', y: 47.53, x: 21.639167, z: 27 },
+                { name: 'Ecseg', y: 47.89653, x: 19.60615, z: 6 },
+                { name: 'Esztergom', y: 47.785556, x: 18.740278, z: 4 },
+                { name: 'Gyöngyös', y: 47.783333, x: 19.933333, z: 3 },
+                { name: 'Jobbágyi', y: 47.82934, x: 19.68207, z: 6 },
+                { name: 'Kálló', y: 47.7513, x: 19.49391, z: 3 },
+                { name: 'Kóka', y: 47.4865, x: 19.57883, z: 6 },
+                { name: 'Kőszeg', y: 47.381911, x: 16.552211, z: 27 },
+                { name: 'Pannonhalma', y: 47.54875, x: 17.74839, z: 3 },
+                { name: 'Pécel', y: 47.4905, x: 19.3409, z: 3 },
+                { name: 'Pest', y: 47.498333, x: 19.040833, z: 5 },
+                { name: 'Romhány', y: 47.92552, x: 19.25822, z: 4 },
+                { name: 'Sárospatak', y: 48.31897, x: 21.56636, z: 21 },
+                { name: 'Sopron', y: 47.68489, x: 16.58305, z: 147 },
+                { name: 'Sümeg', y: 46.9775, x: 17.281944, z: 3 },
+                { name: 'Tóalmás', y: 47.512389, x: 19.667869, z: 5 },
+                { name: 'Úri', y: 47.41639, x: 19.51777, z: 3 },
+                { name: 'Vác', y: 47.77641, x: 19.13724, z: 3 },
+                { name: 'Veresegyháza', y: 47.65712, x: 19.28495, z: 3 }
+
+            ],
+            color: Highcharts.getOptions().colors[3],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[3]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Németország',
+            data: [
+                { name: 'Ulm', y: 48.4, x: 9.983333, z: 4 }
+            ],
+            color: Highcharts.getOptions().colors[4],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[4]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Olaszország',
+            data: [
+                { name: 'Padova', y: 45.416667, x: 11.866667, z: 6 }
+            ],
+            color: Highcharts.getOptions().colors[5],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[5]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Románia',
+            data: [
+                { name: 'Beszterce', y: 47.135833, x: 24.496389, z: 93 },
+                { name: 'Brassó', y: 45.666667, x: 25.616667, z: 34 },
+                { name: 'Fogaras', y: 45.844722, x: 24.974167, z: 8 },
+                { name: 'Gernyeszeg', y: 46.67, x: 24.645, z: 17 },
+                { name: 'Gyergyóalfalu', y: 46.701111, x: 25.503889, z: 4 },
+                { name: 'Gyulafehérvár', y: 46.066944, x: 23.57, z: 17 },
+                { name: 'Kolozsvár', y: 46.78, x: 23.559444, z: 53 },
+                { name: 'Marosvásárhely', y: 46.543056, x: 24.558333, z: 12 },
+                { name: 'Nagybánya', y: 47.656944, x: 23.574167, z: 12 },
+                { name: 'Nagyenyed', y: 46.312222, x: 23.729167, z: 12 },
+                { name: 'Nagyszeben', y: 45.8, x: 24.15, z: 128 },
+                { name: 'Radnót', y: 46.453611, x: 24.233333, z: 4 },
+                { name: 'Segesvár', y: 46.216667, x: 24.8, z: 50 },
+                { name: 'Székelyudvarhely', y: 46.3, x: 25.3, z: 10 },
+                { name: 'Torda', y: 46.560833, x: 23.783611, z: 4 }
+            ],
+            color: Highcharts.getOptions().colors[6],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[6]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Szlovákia',
+            data: [
+                { name: 'Barskapronca', y: 48.683333, x: 18.866667, z: 3 },
+                { name: 'Bártfa', y: 49.294444, x: 21.276389, z: 8 },
+                { name: 'Besztercebánya', y: 48.7325, x: 19.149167, z: 104 },
+                { name: 'Eperjes', y: 48.998056, x: 21.239444, z: 23 },
+                { name: 'Garamkürtös', y: 48.6162, x: 18.7847, z: 3 },
+                { name: 'Garammindszent', y: 48.575, x: 18.875, z: 3 },
+                { name: 'Garamszentbenedek', y: 48.345556, x: 18.558889, z: 17 },
+                { name: 'Garamszentkereszt', y: 48.590278, x: 18.850833, z: 3 },
+                { name: 'Karvaly', y: 48.633333, x: 18.933333, z: 4 },
+                { name: 'Kassa', y: 48.718889, x: 21.257778, z: 83 },
+                { name: 'Késmárk', y: 49.138333, x: 20.429167, z: 5 },
+                { name: 'Komárom', y: 47.757222, x: 18.129722, z: 3 },
+                { name: 'Körmöcbánya', y: 48.705, x: 18.915833, z: 37 },
+                { name: 'Lelesz', y: 48.463889, x: 22.027778, z: 4 },
+                { name: 'Lőcse', y: 49.025, x: 20.588889, z: 66 },
+                { name: 'Nagysáros', y: 49.041667, x: 21.194444, z: 3 },
+                { name: 'Nagyszombat', y: 48.372222, x: 17.583333, z: 20 },
+                { name: 'Nyitra', y: 48.306944, x: 18.086389, z: 4 },
+                { name: 'Pozsony', y: 48.144722, x: 17.112778, z: 28 },
+                { name: 'Sasvár', y: 48.633333, x: 17.141667, z: 3 },
+                { name: 'Selmecbánya', y: 48.458056, x: 18.896389, z: 85 },
+                { name: 'Szakolca', y: 48.844722, x: 17.225, z: 5 },
+                { name: 'Trencsén', y: 48.891944, x: 18.036667, z: 4 },
+                { name: 'Zólyom', y: 48.570556, x: 19.1175, z: 4 }
+            ],
+            color: Highcharts.getOptions().colors[7],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[7]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }, {
+            name: 'Ukrajna',
+            data: [
+                { name: 'Ungvár', y: 48.616667, x: 22.3, z: 7 }
+            ],
+            color: Highcharts.getOptions().colors[8],
+            marker: {
+                fillColor: {
+                    radialGradient: { cx: 0.4, cy: 0.3, r: 0.7 },
+                    stops: [
+                        [0, 'rgba(255,255,255,0.5)'],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[8]).setOpacity(0.5).get('rgba')]
+                    ]
+                }
+            }
+        }]
+    });
+});
+</script>
+</body>
+</html>
