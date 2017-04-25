@@ -3053,9 +3053,9 @@
               "http://code.highcharts.com/highcharts-more.js"
               "http://code.highcharts.com/modules/exporting.js"])
 
-(defn -range [] (let [_ @data/tulajdonosok-élete]
+(defn -range [] (let [data data/tulajdonosok-élete' _ @data]
     [chart' {:min-width "300px" :height "760px" :max-width "900px" :margin "0 auto"}
-(fn [] {
+(fn [] (let [data' (sort-by (fn [[a _ c d]] [c d a]) @data)] {
     :chart {
         :type "columnrange"
         :inverted true
@@ -3070,7 +3070,7 @@
         :enabled false
     }
     :xAxis {
-        :categories (mapv first @data/tulajdonosok-élete)
+        :categories (mapv first data')
     }
     :yAxis {
         :title {
@@ -3091,9 +3091,9 @@
     :colors gradient2
     :series [{
         :name "élt"
-        :data (mapv (comp rest rest) @data/tulajdonosok-élete)
+        :data (mapv (comp rest rest) data')
     }]
-})]))
+}))]))
 
 
 #_(ns koraujkor.charts.range-pie)
@@ -3105,9 +3105,9 @@
               "http://code.highcharts.com/highcharts-more.js"
               "http://code.highcharts.com/modules/exporting.js"])
 
-(defn -range-pie [] (let [_ @data/tulajdonosok-élete]
+(defn -range-pie [] (let [data data/tulajdonosok-élete' _ @data]
     [chart' {:min-width "300px" :height "750px" :max-width "900px" :margin "0 auto"}
-(fn [] {
+(fn [] (let [data' (sort-by (fn [[a _ c d]] [c d a]) @data)] {
     :chart {
         :type "columnrange"
         :inverted true
@@ -3140,22 +3140,22 @@
     :colors gradient2
     :series [{
         :name "élt"
-        :data (mapv (fn [[a b c d]] (merge {:name a :low c :high d} (when-not b {:color (gradient2 5)}))) @data/tulajdonosok-élete)
+        :data (mapv (fn [[a b c d]] (merge {:name a :low c :high d} (when-not b {:color (gradient2 5)}))) data')
         :tooltip {
             :pointFormat "{series.name}: <b>{point.low:.0f}</b> - <b>{point.high:.0f}</b>"
         }
-    }, {
+    }, (let [gender (frequencies (map second @data))] {
         :type "pie"
         :name "nemek aránya"
         :data [{
             :name "nő"
-            :y 2
+            :y (gender false)
             :color (gradient2 5)
             :sliced true
             :selected true
         }, {
             :name "férfi"
-            :y 30
+            :y (gender true)
             :color (gradient2 0)
         }]
         :center [610, 80]
@@ -3167,7 +3167,7 @@
             :pointFormat "<b>{point.y}</b> {point.name}: <b>{point.percentage:.2f}</b>%"
         }
         :allowPointSelect true
-    }, {
+    }), {
         :type "pie"
         :name "felekezeti hovatartozás"
         :data [{
@@ -3192,7 +3192,7 @@
         }
         :allowPointSelect true
     }]
-})]))
+}))]))
 
 
 #_(ns koraujkor.charts.tree)

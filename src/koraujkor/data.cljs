@@ -1127,3 +1127,5 @@
 (d/transact! conn (mapv (fn [[a b c d]] {:db/id (tempid) :pers/name a :pers/male b :pers/born c :pers/dead d}) @tulajdonosok-élete))
 
 (p/posh! conn)
+
+(def tulajdonosok-élete' (p/q conn '[:find ?a ?b ?c ?d :where [?e :pers/name ?a] [?e :pers/male ?b] [?e :pers/born ?c] [?e :pers/dead ?d]]))
